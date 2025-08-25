@@ -37,7 +37,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }: SidebarProps) => {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4">
+      <nav className="flex-1 p-4 overflow-y-auto">
         <TabsList className="grid grid-cols-1 h-auto bg-transparent space-y-2 p-0">
             {/* Regular Menu Items */}
           <TabsTrigger 

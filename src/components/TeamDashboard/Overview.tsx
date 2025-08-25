@@ -62,19 +62,11 @@ interface OverviewProps {
 }
 
 const Overview = ({ overviewData }: OverviewProps) => {
-  const [daysUntilDeadline, setDaysUntilDeadline] = useState(0)
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
   const [countdownLabel, setCountdownLabel] = useState("Competition starts in")
   const [countdownSubLabel, setCountdownSubLabel] = useState("at 15 September 2025")
 
   useEffect(() => {
-    if (overviewData?.upcoming_deadline?.deadline) {
-      const deadlineDate = new Date(overviewData.upcoming_deadline.deadline)
-      const now = new Date()
-      const diffTime = deadlineDate.getTime() - now.getTime()
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-      setDaysUntilDeadline(diffDays)
-    }
 
     let targetDate = new Date("2025-09-14T00:00:00");
     let label = "Competition starts in";
@@ -127,6 +119,18 @@ const Overview = ({ overviewData }: OverviewProps) => {
   }
 
   const { team_details, competition_progress, upcoming_deadline } = overviewData
+
+  let daysUntilDeadline = 0;
+  let showDeadlineCard = false;
+  if (upcoming_deadline && upcoming_deadline.deadline) {
+    const deadlineDate = new Date(upcoming_deadline.deadline);
+    const now = new Date();
+    const diffTime = deadlineDate.getTime() - now.getTime();
+    if (diffTime > 0) {
+      showDeadlineCard = true;
+      daysUntilDeadline = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    }
+  }
 
   const chartData = [
     { name: 'Total Rounds', value: competition_progress.total_rounds },
@@ -230,20 +234,22 @@ const Overview = ({ overviewData }: OverviewProps) => {
       </Card>
 
       {/* Upcoming Deadline Alert - Responsive */}
-      <Card className="border-red-200 bg-red-50 shadow-sm">
-        <CardContent className="p-3 md:p-4">
-          <div className="flex items-start gap-2 md:gap-3">
-            <AlertCircle className="h-4 w-4 md:h-5 md:w-5 text-red-500 flex-shrink-0 mt-0.5" />
-            <div>
-              <h3 className="font-semibold text-red-800 text-sm md:text-base">Upcoming Deadline</h3>
-              <p className="text-xs md:text-sm text-red-600">
-                {upcoming_deadline.title} submission deadline is in {daysUntilDeadline} days (
-                {new Date(upcoming_deadline.deadline).toLocaleDateString()})
-              </p>
+      {showDeadlineCard && (
+        <Card className="border-red-200 bg-red-50 shadow-sm">
+          <CardContent className="p-3 md:p-4">
+            <div className="flex items-start gap-2 md:gap-3">
+              <AlertCircle className="h-4 w-4 md:h-5 md:w-5 text-red-500 flex-shrink-0 mt-0.5" />
+              <div>
+                <h3 className="font-semibold text-red-800 text-sm md:text-base">Upcoming Deadline</h3>
+                <p className="text-xs md:text-sm text-red-600">
+                  {upcoming_deadline.title} submission deadline is in {daysUntilDeadline} days (
+                  {new Date(upcoming_deadline.deadline).toLocaleDateString()})
+                </p>
+              </div>
             </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Team Info Cards - Responsive Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
