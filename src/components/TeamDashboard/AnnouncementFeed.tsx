@@ -49,7 +49,7 @@ const AnnouncementFeed = () => {
                 >
                   <div>
                     <p className="font-medium text-gray-900">{announcement.name}</p>
-                    <p className="text-sm text-gray-500">{new Date(announcement.created_at).toLocaleString()}</p>
+                    
                   </div>
                   <ChevronDown
                     className={`h-5 w-5 text-gray-500 transform transition-transform ${closedAnnouncementIds.includes(announcement.id) ? "" : "rotate-180"}`}
