@@ -24,7 +24,6 @@ const SpecialOffersDemo = () => {
 
       {/* Main Content */}
       <div className="max-w-6xl mx-auto py-16 px-5 sm:px-8 space-y-20">
-
         {/* === Corporate Legal Hub Card === */}
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden transform transition-all hover:shadow-2xl">
           <div className="md:flex">
@@ -64,9 +63,7 @@ const SpecialOffersDemo = () => {
               </ul>
 
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
-                <div>
-                  
-                </div>
+                <div></div>
                 <button
                   style={{ backgroundColor: hasRequested ? "#6c757d" : "#2d4817" }}
                   className="px-8 py-4 text-white font-semibold rounded-xl hover:bg-[#2a4015] transition-all duration-200 transform hover:scale-105 shadow-md"
@@ -88,19 +85,20 @@ const SpecialOffersDemo = () => {
             <div className="md:w-2/3 p-10">
               <h2 className="text-3xl font-bold text-gray-900 mb-5 flex items-center gap-3">
                 <Users className="h-7 w-7" style={{ color: "#2d4817" }} />
-                CLA Internship Program
+                Virtual Corporate Internship Program
               </h2>
               <p className="text-gray-600 text-lg leading-relaxed mb-6">
-                A transformative 12-week program designed for law students and fresh graduates to gain real legal experience, mentorship, and career opportunities.
+                JuristQuest, in collaboration with Crosby Law Associates, offers a Free 30-Day Virtual Corporate Internship Program designed for LLB students to enhance legal knowledge and gain practical insights into corporate law.
               </p>
 
               <ul className="space-y-3 mb-8">
                 {[
-                  "Hands-on case analysis & drafting",
-                  "Mentorship from senior advocates and judges",
-                  "Certificate recognized by partner firms",
-                  "Exclusive networking with legal leaders",
-                  "Top performers fast-tracked to job offers",
+                  "Hands-on exposure to corporate law and case studies",
+                  "Draft legal documents, explore governance & compliance",
+                  "Engage with Crosby Law Associates’ top professionals",
+                  "Develop legal research, writing, and communication skills",
+                  "Earn a completion certificate from Crosby Law Associates",
+                  "Network with industry experts and fellow interns",
                 ].map((benefit, idx) => (
                   <li key={idx} className="flex items-center text-gray-700 gap-3">
                     <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
@@ -110,9 +108,7 @@ const SpecialOffersDemo = () => {
               </ul>
 
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
-                <div>
-                 
-                </div>
+                <div></div>
                 <button
                   style={{ backgroundColor: hasApplied ? "#6c757d" : "#2d4817" }}
                   className="px-8 py-4 text-white font-semibold rounded-xl hover:bg-[#2a4015] transition-all duration-200 transform hover:scale-105 shadow-md"
@@ -124,7 +120,6 @@ const SpecialOffersDemo = () => {
                 {internshipError && <p className="text-red-500">{internshipError}</p>}
               </div>
             </div>
-
           </div>
         </div>
       </div>
