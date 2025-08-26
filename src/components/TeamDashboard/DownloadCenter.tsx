@@ -12,7 +12,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 import HTMLFlipBook from 'react-pageflip';
 import 'react-pdf/dist/Page/TextLayer.css';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
-import { ArrowLeft, ArrowRight, Plus, Minus } from "lucide-react";
+import { ArrowLeft, ArrowRight, Plus, Minus, Volume2, VolumeX } from "lucide-react";
 
 // Fixed PDFFlipbook Component
 type PagesProps = {
@@ -26,6 +26,110 @@ const Pages = forwardRef<HTMLDivElement, PagesProps>(({ children }, ref) => (
 ));
 Pages.displayName = 'Pages';
 
+// Enhanced book page flip sound generation
+const createBookPageFlipSound = () => {
+  try {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    
+    const playBookPageFlipSound = () => {
+      // Create multiple noise sources to simulate paper texture
+      const bufferSize = audioContext.sampleRate * 0.2; // 200ms of audio
+      const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+      const data = buffer.getChannelData(0);
+      
+      // Generate pink noise for paper texture
+      let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+      for (let i = 0; i < bufferSize; i++) {
+        const white = Math.random() * 2 - 1;
+        b0 = 0.99886 * b0 + white * 0.0555179;
+        b1 = 0.99332 * b1 + white * 0.0750759;
+        b2 = 0.96900 * b2 + white * 0.1538520;
+        b3 = 0.86650 * b3 + white * 0.3104856;
+        b4 = 0.55000 * b4 + white * 0.5329522;
+        b5 = -0.7616 * b5 - white * 0.0168980;
+        const pink = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+        b6 = white * 0.115926;
+        
+        // Apply envelope for paper flip characteristics
+        const t = i / bufferSize;
+        let envelope = 0;
+        
+        if (t < 0.05) {
+          // Quick attack for initial paper contact
+          envelope = Math.pow(t / 0.05, 0.3);
+        } else if (t < 0.15) {
+          // Main flip sound
+          envelope = 1.0 - Math.pow((t - 0.05) / 0.1, 1.5);
+        } else if (t < 0.35) {
+          // Paper settling
+          envelope = 0.3 * Math.exp(-(t - 0.15) * 8);
+        } else {
+          // Final decay
+          envelope = 0.1 * Math.exp(-(t - 0.35) * 15);
+        }
+        
+        // Add frequency-dependent filtering to simulate paper resonance
+        const freq = 1000 + Math.sin(t * Math.PI * 4) * 500;
+        const resonance = Math.sin(t * freq * 2 * Math.PI / audioContext.sampleRate) * 0.1;
+        
+        data[i] = (pink * 0.7 + resonance) * envelope * 0.15;
+      }
+      
+      // Create and configure the buffer source
+      const source = audioContext.createBufferSource();
+      source.buffer = buffer;
+      
+      // Add filtering for more realistic paper sound
+      const lowpass = audioContext.createBiquadFilter();
+      lowpass.type = 'lowpass';
+      lowpass.frequency.setValueAtTime(3000, audioContext.currentTime);
+      lowpass.Q.setValueAtTime(1, audioContext.currentTime);
+      
+      const highpass = audioContext.createBiquadFilter();
+      highpass.type = 'highpass';
+      highpass.frequency.setValueAtTime(200, audioContext.currentTime);
+      highpass.Q.setValueAtTime(0.5, audioContext.currentTime);
+      
+      // Add a subtle reverb effect
+      const convolver = audioContext.createConvolver();
+      const impulseBuffer = audioContext.createBuffer(2, audioContext.sampleRate * 0.1, audioContext.sampleRate);
+      for (let channel = 0; channel < 2; channel++) {
+        const channelData = impulseBuffer.getChannelData(channel);
+        for (let i = 0; i < channelData.length; i++) {
+          channelData[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / channelData.length, 2) * 0.02;
+        }
+      }
+      convolver.buffer = impulseBuffer;
+      
+      // Master gain for volume control
+      const masterGain = audioContext.createGain();
+      masterGain.gain.setValueAtTime(0.3, audioContext.currentTime);
+      
+      // Connect the audio graph
+      source.connect(highpass);
+      highpass.connect(lowpass);
+      lowpass.connect(convolver);
+      convolver.connect(masterGain);
+      masterGain.connect(audioContext.destination);
+      
+      // Also connect dry signal for more presence
+      const dryGain = audioContext.createGain();
+      dryGain.gain.setValueAtTime(0.8, audioContext.currentTime);
+      lowpass.connect(dryGain);
+      dryGain.connect(masterGain);
+      
+      // Play the sound
+      source.start(audioContext.currentTime);
+      source.stop(audioContext.currentTime + 0.2);
+    };
+    
+    return playBookPageFlipSound;
+  } catch (error) {
+    console.warn('Audio context not supported:', error);
+    return () => {}; // Return empty function if audio not supported
+  }
+};
+
 function PDFFlipbook({ pdfUrl, onClose, title }) {
   const [numPages, setNumPages] = useState(0);
   const [flipBookKey, setFlipBookKey] = useState(Date.now());
@@ -36,7 +140,14 @@ function PDFFlipbook({ pdfUrl, onClose, title }) {
   const [showUsageTip, setShowUsageTip] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
   const [zoomLevel, setZoomLevel] = useState(1);
+  const [soundEnabled, setSoundEnabled] = useState(true);
   const flipBookRef = useRef(null);
+  const playFlipSound = useRef(null);
+
+  // Initialize sound
+  useEffect(() => {
+    playFlipSound.current = createBookPageFlipSound();
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => setShowUsageTip(false), 5000);
@@ -57,20 +168,33 @@ function PDFFlipbook({ pdfUrl, onClose, title }) {
     return () => document.removeEventListener('wheel', handleWheel);
   }, []);
 
+  const playPaperSound = () => {
+    if (soundEnabled && playFlipSound.current) {
+      playFlipSound.current();
+    }
+  };
+
   const goToPreviousPage = () => {
     if (flipBookRef.current && currentPage > 0) {
+      playPaperSound();
       flipBookRef.current.pageFlip().flipPrev();
     }
   };
 
   const goToNextPage = () => {
     if (flipBookRef.current && currentPage < numPages - 1) {
+      playPaperSound();
       flipBookRef.current.pageFlip().flipNext();
     }
   };
 
   const handleFlipChange = (e) => {
     setCurrentPage(e.data);
+    playPaperSound();
+  };
+
+  const toggleSound = () => {
+    setSoundEnabled(!soundEnabled);
   };
 
   function onDocumentLoadSuccess({ numPages, ...documentData }) {
@@ -104,9 +228,21 @@ function PDFFlipbook({ pdfUrl, onClose, title }) {
                   <li>Hold Ctrl/Cmd + mouse wheel to zoom in/out</li>
                   <li>Click arrows on sides to navigate</li>
                   <li>Current zoom: {Math.round(zoomLevel * 100)}%</li>
+                  <li>Sound: {soundEnabled ? 'On' : 'Off'}</li>
                 </ul>
               </div>
             )}
+            <Button
+              onClick={toggleSound}
+              className={`text-white px-3 py-2 rounded-lg ${
+                soundEnabled 
+                  ? 'bg-green-600 hover:bg-green-700' 
+                  : 'bg-gray-600 hover:bg-gray-700'
+              }`}
+              title={soundEnabled ? 'Turn off sound' : 'Turn on sound'}
+            >
+              {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+            </Button>
             <Button
               onClick={onClose}
               className="text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg"
