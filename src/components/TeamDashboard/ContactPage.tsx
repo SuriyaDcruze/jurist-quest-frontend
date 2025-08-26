@@ -39,6 +39,7 @@ const ContactPage = () => {
                 <div className="ml-4">
                   <h3 className="font-semibold text-gray-900 mb-1">General Inquiries</h3>
                   <p className="text-sm text-gray-600">For general questions</p>
+                  <p className="text-sm text-gray-600">info@juristquest.com</p>
                 </div>
               </div>
               <Button
@@ -60,6 +61,9 @@ const ContactPage = () => {
                   <p className className="text-sm text-gray-600">
                     For customer assistance via email
                   </p>
+                  <p className className="text-sm text-gray-600">
+                    customersupport@juristquest.com
+                  </p>
                 </div>
               </div>
               <Button
@@ -79,6 +83,7 @@ const ContactPage = () => {
                 <div className="ml-4">
                   <h3 className="font-semibold text-gray-900 mb-1">Sponsorship / Partnership</h3>
                   <p className="text-sm text-gray-600">For collaboration opportunities</p>
+                  <p className="text-sm text-gray-600">partners@juristquest.com</p>
                 </div>
               </div>
               <Button className="w-full bg-[#2d4817] hover:bg-[#2a4015] text-white" onClick={handleEmailSponsorship}>
@@ -95,6 +100,7 @@ const ContactPage = () => {
                 <div className="ml-4">
                   <h3 className="font-semibold text-gray-900 mb-1">General Inquiry / Sponsorship / Partnership</h3>
                   <p className="text-sm text-gray-600">Call for general or partnership inquiries</p>
+                  <p className="text-sm text-gray-600">+919677873855</p>
                 </div>
               </div>
               <Button
@@ -114,6 +120,7 @@ const ContactPage = () => {
                 <div className="ml-4">
                   <h3 className="font-semibold text-gray-900 mb-1">Customer Support Call</h3>
                   <p className="text-sm text-gray-600">Call for immediate customer assistance</p>
+                  <p className="text-sm text-gray-600">+919677883855</p>
                 </div>
               </div>
               <Button className="w-full bg-[#2d4817] hover:bg-[#2a4015] text-white" onClick={handleCallCustomerSupport}>
