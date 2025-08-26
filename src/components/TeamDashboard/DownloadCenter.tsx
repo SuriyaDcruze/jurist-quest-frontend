@@ -342,7 +342,7 @@ const DownloadCenter = () => {
                             variant="outline"
                             size="sm"
                             className="text-blue-600 border-blue-200 hover:bg-blue-50 hover:text-blue-700 bg-transparent"
-                            onClick={() => handlePreview(item.file, item.name || "Document Preview")}
+                            onClick={() => handlePreview(item.file.replace("http://", "https://"), item.name || "Document Preview")}
                           >
                             <Eye className="mr-2 h-4 w-4" />
                             Preview
@@ -350,7 +350,7 @@ const DownloadCenter = () => {
                         )}
                         <Button
                           size="sm"
-                          onClick={() => handleDownload(item.file)}
+                          onClick={() => handleDownload(item.file.replace("http://", "https://"))}
                           className="bg-[#2d4817] hover:bg-[#2a4015] text-white flex items-center gap-1"
                         >
                           <Download className="h-4 w-4" />
