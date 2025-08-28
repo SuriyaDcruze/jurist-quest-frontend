@@ -67,7 +67,6 @@ const Overview = ({ overviewData }: OverviewProps) => {
   const [countdownSubLabel, setCountdownSubLabel] = useState("at 20th September 2025")
 
   useEffect(() => {
-
     let targetDate = new Date("2025-09-19T00:00:00");
     let label = "Competition starts in";
     let subLabel = "at 20th September 2025";
@@ -137,6 +136,23 @@ const Overview = ({ overviewData }: OverviewProps) => {
     { name: 'Upcoming Rounds', value: competition_progress.upcoming_rounds },
     { name: 'Ongoing Rounds', value: competition_progress.ongoing_rounds },
   ];
+
+  // Helper function to format date with ordinal suffix
+  const formatDateWithOrdinal = (date: Date): string => {
+    const day = date.getDate();
+    const month = date.toLocaleString('en-US', { month: 'long' });
+    const year = date.getFullYear();
+    const ordinal = (day: number): string => {
+      if (day > 3 && day < 21) return 'th';
+      switch (day % 10) {
+        case 1: return 'st';
+        case 2: return 'nd';
+        case 3: return 'rd';
+        default: return 'th';
+      }
+    };
+    return `${day}${ordinal(day)} ${month} ${year}`;
+  };
 
   return (
     <div className="space-y-6 p-4 md:p-6">
@@ -209,7 +225,7 @@ const Overview = ({ overviewData }: OverviewProps) => {
                   <div className="text-xs text-gray-500 mt-1">
                     Date: {new Date(competition_progress.next_upcoming_round.date).toLocaleDateString()}
                     {competition_progress.next_upcoming_round.time &&
-                      ` at ${competition_progress.next_upcoming_round.time.substring(0, 5)}`}
+                      ` at ${competition_progress.next_upcoming_round.time.substring(0, 5)} `}
                   </div>
                 )}
               </div>
@@ -243,7 +259,7 @@ const Overview = ({ overviewData }: OverviewProps) => {
                 <h3 className="font-semibold text-red-800 text-sm md:text-base">Upcoming Deadline</h3>
                 <p className="text-xs md:text-sm text-red-600">
                   {upcoming_deadline.title} submission deadline is in {daysUntilDeadline} days (
-                  {new Date(upcoming_deadline.deadline).toLocaleDateString()})
+                  {formatDateWithOrdinal(new Date(upcoming_deadline.deadline))})
                 </p>
               </div>
             </div>
