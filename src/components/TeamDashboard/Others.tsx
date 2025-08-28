@@ -41,12 +41,8 @@ const SpecialOffersDemo = () => {
               <ul className="space-y-3 mb-8 grid grid-cols-1 md:grid-cols-2 gap-3">
                 {[
                   "CLH Membership Profile",
-                  "CLH Legal Database",
-                  "Zero Balance Current Account",
-                  "Mediclaim Policy with flexi-EMI",
                   "Complimentary Advocate Handbag",
                   "Co-working awfis spaces",
-                  "Advocate CRM",
                   "CLH Traveldesk",
                   "CLH Refreshments",
                   "Legal Networking",
