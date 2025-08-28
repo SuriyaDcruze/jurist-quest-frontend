@@ -18,7 +18,7 @@ const SpecialOffersDemo = () => {
         </h1>
         <p className="text-lg md:text-xl max-w-4xl mx-auto opacity-95 leading-relaxed">
           Unlock premium access to the <strong>Corporate Legal Hub</strong> and jumpstart your career with the{" "}
-          <strong>CLA Internship Program</strong> — now with <span className="underline">limited-time discounts</span> for early adopters!
+          <strong>CLA Internship Program</strong> – now with <span className="underline">limited-time discounts</span> for early adopters!
         </p>
       </section>
 
@@ -27,16 +27,7 @@ const SpecialOffersDemo = () => {
         {/* === Corporate Legal Hub Card === */}
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden transform transition-all hover:shadow-2xl">
           <div className="md:flex">
-            {/* Left Badge */}
-            <div
-              style={{ backgroundColor: "#2d4817" }}
-              className="md:w-1/3 p-10 text-white text-center flex flex-col items-center justify-center space-y-4"
-            >
-              <Tag className="h-14 w-14 opacity-90" />
-              <h3 className="text-2xl font-bold">Save 30%</h3>
-              <p className="text-sm opacity-90">Limited-time annual discount</p>
-            </div>
-
+            
             {/* Right Content */}
             <div className="md:w-2/3 p-10">
               <h2 className="text-3xl font-bold text-gray-900 mb-5 flex items-center gap-3">
@@ -47,13 +38,24 @@ const SpecialOffersDemo = () => {
                 Empower your legal team with a comprehensive digital platform featuring contract automation, compliance tools, research databases, and live expert sessions.
               </p>
 
-              <ul className="space-y-3 mb-8">
+              <ul className="space-y-3 mb-8 grid grid-cols-1 md:grid-cols-2 gap-3">
                 {[
-                  "Legal research & precedent library",
-                  "Smart contract generation tools",
-                  "Compliance dashboards & alerts",
-                  "Monthly webinars with industry experts",
-                  "Team-based collaboration spaces",
+                  "CLH Membership Profile",
+                  "CLH Legal Database",
+                  "Zero Balance Current Account",
+                  "Mediclaim Policy with flexi-EMI",
+                  "Complimentary Advocate Handbag",
+                  "Co-working awfis spaces",
+                  "Advocate CRM",
+                  "CLH Traveldesk",
+                  "CLH Refreshments",
+                  "Legal Networking",
+                  "Discussion Board",
+                  "E-courts Search",
+                  "Training Programs",
+                  "Annual Awards",
+                  "Virtual Mentorship",
+                  "AI Case Management",
                 ].map((feature, idx) => (
                   <li key={idx} className="flex items-center text-gray-700 gap-3">
                     <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
@@ -95,7 +97,7 @@ const SpecialOffersDemo = () => {
                 {[
                   "Hands-on exposure to corporate law and case studies",
                   "Draft legal documents, explore governance & compliance",
-                  "Engage with Crosby Law Associates’ top professionals",
+                  "Engage with Crosby Law Associates' top professionals",
                   "Develop legal research, writing, and communication skills",
                   "Earn a completion certificate from Crosby Law Associates",
                   "Network with industry experts and fellow interns",
