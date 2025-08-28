@@ -7,8 +7,11 @@ import DownloadCenterSkeleton from "@/components/skeleton/TeamDashboard/Download
 import { format } from 'date-fns';
 import { useState, useEffect, ReactNode, forwardRef, useRef } from "react";
 import { Document, Page, pdfjs } from 'react-pdf';
-import pdfjsWorker from 'pdfjs-dist/build/pdf.worker?url';
-pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
+
+
+// Always set workerSrc explicitly in production
+pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+
 import HTMLFlipBook from 'react-pageflip';
 import 'react-pdf/dist/Page/TextLayer.css';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
