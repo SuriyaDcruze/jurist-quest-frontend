@@ -64,11 +64,16 @@ const MemorialUpload = () => {
   };
 
   const handleUpload = async () => {
-    if (selectedFile && mootProblem && language) {
+    if (selectedFile && mootProblem) {
       setIsUploading(true);
       setUploadError(null);
       try {
-        await uploadMemorial(selectedFile, `${mootProblem}_${language}`);
+        // Default to English for Moot Problem 2
+        const uploadLanguage = mootProblem.includes("problem2") ? "english" : language;
+        if (!uploadLanguage) {
+          throw new Error("Language selection is required for Moot Problem 1");
+        }
+        await uploadMemorial(selectedFile, `${mootProblem}_${uploadLanguage}`);
         setSelectedFile(null);
         setMootProblem("");
         setLanguage("");
