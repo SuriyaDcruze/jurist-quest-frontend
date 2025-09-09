@@ -449,9 +449,9 @@ const Index = () => {
 
   type IconType = React.ComponentType<React.SVGProps<SVGSVGElement>>
   const schedule: { title: string; mode?: string; date: string; icon: IconType }[] = [
-    { title: "Prelims", mode: "Virtual", date: "20th – 30th September 2025", icon: Video },
+    { title: "Prelims", mode: "Virtual", date: "10th – 20th October 2025", icon: Video },
     { title: "Quarter Finals", mode: "Virtual", date: "10th – 20th October 2025", icon: Video },
-    { title: "Semi-Finals", date: "1st - 10th November 2025", icon: MapPin },
+    { title: "Semi-Finals", date: "5th - 10th November 2025", icon: MapPin },
     { title: "Finals", date: "29th November 2025", icon: Trophy },
   ]
 
@@ -459,7 +459,7 @@ const Index = () => {
     "@context": "https://schema.org",
     "@type": "EventSeries",
     name: "Roundwatch Hub Competition 2025",
-    startDate: "2025-09-20",
+    startDate: "2025-09-30",
     eventSchedule: schedule.map((s) => ({
       "@type": "Schedule",
       name: s.title,
@@ -467,9 +467,9 @@ const Index = () => {
       startDate: s.date,
     })),
     subEvents: [
-      { "@type": "Event", name: "Prelims (Virtual)", startDate: "2025-09-20", endDate: "2025-09-30" },
+      { "@type": "Event", name: "Prelims (Virtual)", startDate: "2025-10-10", endDate: "2025-10-20" },
       { "@type": "Event", name: "Quarter Finals (Virtual)", startDate: "2025-10-10", endDate: "2025-10-20" },
-      { "@type": "Event", name: "Semi-Finals", startDate: "2025-11-01", endDate: "2025-11-10" },
+      { "@type": "Event", name: "Semi-Finals", startDate: "2025-11-05", endDate: "2025-11-10" },
       { "@type": "Event", name: "Finals", startDate: "2025-11-29" },
     ],
   }
