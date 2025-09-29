@@ -16,7 +16,7 @@ const Overview = () => {
   const { overview, isLoading, error } = useJuryOverview();
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
 
-  const registrationEndDate = new Date("2025-09-29T00:00:00")
+  const registrationEndDate = new Date("2025-10-31T00:00:00")
 
   const calculateTimeLeft = () => {
     const now = new Date()
