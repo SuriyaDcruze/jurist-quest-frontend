@@ -64,12 +64,12 @@ interface OverviewProps {
 const Overview = ({ overviewData }: OverviewProps) => {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
   const [countdownLabel, setCountdownLabel] = useState("Competition starts in")
-  const [countdownSubLabel, setCountdownSubLabel] = useState("at 30th October 2025")
+  const [countdownSubLabel, setCountdownSubLabel] = useState("at 26th November 2025")
 
   useEffect(() => {
-    let targetDate = new Date("2025-10-31T00:00:00");
+    let targetDate = new Date("2025-11-26T00:00:00");
     let label = "Competition starts in";
-    let subLabel = "at 30th October 2025";
+    let subLabel = "at 26th November 2025";
 
     if (overviewData?.competition_progress) {
         const { current_round, next_upcoming_round } = overviewData.competition_progress;
