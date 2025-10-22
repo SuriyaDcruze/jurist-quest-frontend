@@ -16,7 +16,7 @@ const Overview = () => {
   const { overview, isLoading, error } = useJuryOverview();
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
 
-  const registrationEndDate = new Date("2025-10-31T00:00:00")
+  const registrationEndDate = new Date("2025-11-26T00:00:00")
 
   const calculateTimeLeft = () => {
     const now = new Date()
@@ -83,7 +83,7 @@ const Overview = () => {
                   <span>{timeLeft.seconds.toString().padStart(2, "0")}S</span>
                 </div>
               </div>
-              <p className="text-xs md:text-sm text-gray-900">at 30th September 2025</p>
+              <p className="text-xs md:text-sm text-gray-900">at 26th November 2025</p>
             </div>
           </div>
 
