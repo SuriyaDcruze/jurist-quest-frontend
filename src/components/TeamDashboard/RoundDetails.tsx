@@ -449,9 +449,9 @@ const Index = () => {
 
   type IconType = React.ComponentType<React.SVGProps<SVGSVGElement>>
   const schedule: { title: string; mode?: string; date: string; icon: IconType }[] = [
-    { title: "Prelims", mode: "Virtual", date: "26th November 2025", icon: Video },
-    { title: "Quarter Finals", mode: "Virtual", date: "26th November 2025 - 31st January 2026", icon: Video },
-    { title: "Semi-Finals", date: "26th November 2025 - 31st January 2026", icon: MapPin },
+    { title: "Prelims", mode: "Virtual", date: "13th December 2025", icon: Video },
+    { title: "Quarter Finals", mode: "Virtual", date: "13th December 2025 - 31st January 2026", icon: Video },
+    { title: "Semi-Finals", date: "13th December 2025 - 31st January 2026", icon: MapPin },
     { title: "Finals", date: "31st January 2026", icon: Trophy },
   ]
 
