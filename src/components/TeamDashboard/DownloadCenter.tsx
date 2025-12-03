@@ -10,7 +10,7 @@ import { Document, Page, pdfjs } from 'react-pdf';
 
 
 // Always set workerSrc explicitly in production
-pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
 
 import HTMLFlipBook from 'react-pageflip';
 import 'react-pdf/dist/Page/TextLayer.css';
@@ -35,11 +35,47 @@ function PDFFlipbook({ pdfUrl, onClose, title }) {
   const [error, setError] = useState(null);
   const [pdfDocument, setPdfDocument] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [pdfBlobUrl, setPdfBlobUrl] = useState(null);
   const isMobile = window.innerWidth < 768;
   const [showUsageTip, setShowUsageTip] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
   const [zoomLevel, setZoomLevel] = useState(1);
   const flipBookRef = useRef(null);
+
+  // Fetch PDF as blob to avoid CORS issues
+  useEffect(() => {
+    if (pdfUrl) {
+      setIsLoading(true);
+      setError(null);
+      setPdfBlobUrl(null);
+
+      fetch(pdfUrl, {
+        mode: 'cors',
+        credentials: 'include'
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to fetch PDF');
+          }
+          return response.blob();
+        })
+        .then(blob => {
+          const blobUrl = URL.createObjectURL(blob);
+          setPdfBlobUrl(blobUrl);
+        })
+        .catch(error => {
+          console.error('PDF fetch failed:', error);
+          setError('Failed to load PDF. Please try downloading the file or contact support.');
+          setIsLoading(false);
+        });
+    }
+
+    return () => {
+      if (pdfBlobUrl) {
+        URL.revokeObjectURL(pdfBlobUrl);
+      }
+    };
+  }, [pdfUrl]);
 
   useEffect(() => {
     const timer = setTimeout(() => setShowUsageTip(false), 5000);
@@ -194,7 +230,7 @@ function PDFFlipbook({ pdfUrl, onClose, title }) {
               >
                 {Array.from(new Array(numPages), (_, index) => (
                   <Pages key={index}>
-                    <Document file={pdfUrl}>
+                    <Document file={pdfBlobUrl}>
                       <Page
                         pageNumber={index + 1}
                         width={isMobile ? 330 : 550}
@@ -246,7 +282,7 @@ function PDFFlipbook({ pdfUrl, onClose, title }) {
         {/* Single Document component for loading - outside the flipbook */}
         <div style={{ display: 'none' }}>
           <Document
-            file={pdfUrl}
+            file={pdfBlobUrl}
             onLoadSuccess={onDocumentLoadSuccess}
             onLoadError={onDocumentLoadError}
           />
@@ -262,8 +298,8 @@ const DownloadCenter = () => {
   const [flipbookTitle, setFlipbookTitle] = useState(null);
 
   const handlePreview = (url: string, title: string) => {
-    setShowFlipbook(url);
-    setFlipbookTitle(title);
+    // Open PDF in new tab since embedding is blocked by CORS
+    window.open(url.replace("http://", "https://"), "_blank");
   }
 
   const handleClosePreview = () => {
@@ -345,7 +381,7 @@ const DownloadCenter = () => {
                             variant="outline"
                             size="sm"
                             className="text-blue-600 border-blue-200 hover:bg-blue-50 hover:text-blue-700 bg-transparent"
-                            onClick={() => handlePreview(item.file.replace("http://", "https://"), item.name || "Document Preview")}
+                            onClick={() => handlePreview(item.file, item.name || "Document Preview")}
                           >
                             <Eye className="mr-2 h-4 w-4" />
                             Preview
