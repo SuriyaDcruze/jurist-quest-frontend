@@ -41,6 +41,10 @@ const RoundDetails = () => {
   }
 
   if (error) {
+    if (error.message === "Access token not found.") {
+      window.location.href = "/login";
+      return null;
+    }
     return <div className="text-red-500 p-6">Error: {error.message}</div>
   }
 
@@ -130,10 +134,7 @@ const RoundDetails = () => {
                         )}
                         <span>{ongoingRound.round_type === "online" ? "Online Meeting" : ongoingRound.venue}</span>
                       </div>
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
-                        <User className="h-4 w-4" />
-                        <span>Judge: {ongoingRound.judge}</span>
-                      </div>
+                     
                     </div>
 
                     <div className="bg-gray-50 rounded-lg p-4">
@@ -446,7 +447,7 @@ const RoundDetails = () => {
 
 const Index = () => {
   useEffect(() => {
-    document.title = "Competition Schedule 2025 | roundwatch-hub"
+    document.title = "Competition Schedule 2025/2026 | roundwatch-hub"
   }, [])
 
   type IconType = React.ComponentType<React.SVGProps<SVGSVGElement>>
@@ -480,7 +481,7 @@ const Index = () => {
     <main className="min-h-screen bg-background">
       <header className="container py-10">
         <div className="rounded-2xl bg-gradient-to-b from-secondary/60 to-background border border-border p-8 shadow-sm">
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground">Competition Schedule 2025</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-foreground">Competition Schedule 2025/2026</h1>
           <p className="mt-2 text-muted-foreground">Key dates at a glance</p>
 
           <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
