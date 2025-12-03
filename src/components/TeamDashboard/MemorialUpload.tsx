@@ -41,6 +41,24 @@ const MemorialUpload = () => {
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      // Validate file type
+      if (file.type !== "application/pdf") {
+        setUploadError("Only PDF files are allowed. Please select a PDF file.");
+        setSelectedFile(null);
+        setPreviewUrl(null);
+        return;
+      }
+
+      // Validate file size (10MB limit)
+      const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+      if (file.size > maxSize) {
+        setUploadError("File size exceeds 10MB limit. Please select a smaller file.");
+        setSelectedFile(null);
+        setPreviewUrl(null);
+        return;
+      }
+
+      setUploadError(null);
       setSelectedFile(file);
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
@@ -52,7 +70,25 @@ const MemorialUpload = () => {
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     const file = event.dataTransfer.files?.[0];
-    if (file && file.type === "application/pdf") {
+    if (file) {
+      // Validate file type
+      if (file.type !== "application/pdf") {
+        setUploadError("Only PDF files are allowed. Please drag and drop a PDF file.");
+        setSelectedFile(null);
+        setPreviewUrl(null);
+        return;
+      }
+
+      // Validate file size (10MB limit)
+      const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+      if (file.size > maxSize) {
+        setUploadError("File size exceeds 10MB limit. Please select a smaller file.");
+        setSelectedFile(null);
+        setPreviewUrl(null);
+        return;
+      }
+
+      setUploadError(null);
       setSelectedFile(file);
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
