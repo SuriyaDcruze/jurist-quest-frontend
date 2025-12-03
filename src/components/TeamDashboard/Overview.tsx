@@ -215,7 +215,7 @@ const Overview = ({ overviewData }: OverviewProps) => {
                     <Calendar className="h-4 w-4 md:h-5 md:w-5 text-white" />
                   </div>
                   <div>
-                    <div className="text-sm md:text-lg font-bold text-gray-900">Next Upcoming Round</div>
+                    <div className="text-sm md:text-lg font-bold text-gray-900">Upcoming Round</div>
                   </div>
                 </div>
                 <div className="text-xs md:text-sm text-gray-600">
