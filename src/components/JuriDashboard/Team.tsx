@@ -771,7 +771,7 @@ const Team = () => {
                                   </h4>
                                   <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
                                     <Clock className="h-4 w-4" />
-                                    {format(new Date(round.date), 'p')}
+                                    {format(new Date(`${round.date}T${round.time}`), 'p')}
                                   </div>
                                 </div>
                                 <div className="bg-[#2d4817] text-white px-3 py-1 rounded-full text-xs font-semibold">
