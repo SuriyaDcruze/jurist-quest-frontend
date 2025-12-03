@@ -162,11 +162,55 @@ const OralMarksEntryPage = () => {
   }, [existingMarksTeam2])
 
   const handleScoreChangeTeam1 = (field, value) => {
-    setScoresTeam1((prev) => ({ ...prev, [field]: value }))
+    if (field === 'overall_comments') {
+      setScoresTeam1((prev) => ({ ...prev, [field]: value }))
+      return
+    }
+
+    const criterion = markingCriteria.find(c => c.id === field)
+    if (!criterion) {
+      setScoresTeam1((prev) => ({ ...prev, [field]: value }))
+      return
+    }
+
+    if (value === "") {
+      setScoresTeam1((prev) => ({ ...prev, [field]: value }))
+      return
+    }
+
+    const numValue = parseFloat(value)
+    if (isNaN(numValue)) {
+      return
+    }
+
+    const clamped = Math.max(0, Math.min(criterion.max_points, numValue))
+    setScoresTeam1((prev) => ({ ...prev, [field]: clamped.toString() }))
   }
 
   const handleScoreChangeTeam2 = (field, value) => {
-    setScoresTeam2((prev) => ({ ...prev, [field]: value }))
+    if (field === 'overall_comments') {
+      setScoresTeam2((prev) => ({ ...prev, [field]: value }))
+      return
+    }
+
+    const criterion = markingCriteria.find(c => c.id === field)
+    if (!criterion) {
+      setScoresTeam2((prev) => ({ ...prev, [field]: value }))
+      return
+    }
+
+    if (value === "") {
+      setScoresTeam2((prev) => ({ ...prev, [field]: value }))
+      return
+    }
+
+    const numValue = parseFloat(value)
+    if (isNaN(numValue)) {
+      return
+    }
+
+    const clamped = Math.max(0, Math.min(criterion.max_points, numValue))
+    setScoresTeam2((prev) => ({ ...prev, [field]: clamped.toString() }))
   }
 
   const handleSubmit = async () => {
