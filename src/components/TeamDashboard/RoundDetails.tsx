@@ -309,7 +309,7 @@ const RoundDetails = () => {
                         <MapPin className="h-4 w-4" />
                       )}
                       <span>
-                        {selectedRound.round_type === "online" ? (
+                        {selectedRound.round_type === "online" && selectedRound.status !== "evaluating" ? (
                           <a
                             href={selectedRound.meet_url}
                             target="_blank"
@@ -318,6 +318,8 @@ const RoundDetails = () => {
                           >
                             Join Meet
                           </a>
+                        ) : selectedRound.round_type === "online" ? (
+                          "Online Meeting"
                         ) : (
                           selectedRound.venue
                         )}
