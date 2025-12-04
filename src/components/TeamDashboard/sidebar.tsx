@@ -42,20 +42,21 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }: SidebarProps) => {
       <nav className="flex-1 p-4 overflow-y-auto">
         <TabsList className="grid grid-cols-1 h-auto bg-transparent space-y-2 p-0">
           {/* Dashboard - Featured Button */}
-          <TabsTrigger
-                  value="announcements"
-                  className="w-full bg-transparent hover:bg-gray-50 text-gray-700 rounded-lg h-10 flex items-center justify-start gap-3 px-4 data-[state=active]:[background-color:#2d4817] data-[state=active]:text-white border-none"
-                >
-                  <Bell className="h-5 w-5" />
-                  <span>Announcement</span>
-                </TabsTrigger>
           <TabsTrigger 
             value="overview" 
-            className="w-full bg-transparent hover:bg-gray-50 text-gray-700 rounded-lg h-12 flex items-center justify-start gap-3 px-4 data-[state=active]:[background-color:#2d4817] data-[state=active]:text-white font-medium"
+            className="w-full bg-transparent hover:bg-gray-50 text-gray-700 rounded-lg h-12 flex items-center justify-start gap-3 px-4 data-[state=active]:[background-color:#2d4817] data-[state=active]:text-white border-none"
           >
             <LayoutDashboard className="h-5 w-5" />
             <span>Dashboard</span>
           </TabsTrigger>
+          <TabsTrigger
+            value="announcements"
+            className="w-full bg-transparent hover:bg-gray-50 text-gray-700 rounded-lg h-10 flex items-center justify-start gap-3 px-4 data-[state=active]:[background-color:#2d4817] data-[state=active]:text-white border-none"
+                >
+                  <Bell className="h-5 w-5" />
+                  <span>Announcement</span>
+                </TabsTrigger>
+          
           <TabsTrigger
                   value="round-details"
                   className="w-full bg-transparent hover:bg-gray-50 text-gray-700 rounded-lg h-10 flex items-center justify-start gap-3 px-4 data-[state=active]:[background-color:#2d4817] data-[state=active]:text-white border-none"
