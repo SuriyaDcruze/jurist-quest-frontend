@@ -68,7 +68,7 @@ const Overview = ({ overviewData }: OverviewProps) => {
 
   useEffect(() => {
     let targetDate = new Date("2025-12-13T00:00:00");
-    let label = "Prelims starts in";
+    let label = "Competition starts in";
     let subLabel = "at 13th December 2025";
 
     if (overviewData?.competition_progress) {
