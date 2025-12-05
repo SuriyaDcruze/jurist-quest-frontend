@@ -67,21 +67,21 @@ const Overview = ({ overviewData }: OverviewProps) => {
   const [countdownSubLabel, setCountdownSubLabel] = useState("at 26th November 2025")
 
   useEffect(() => {
-    let targetDate = new Date("2025-11-26T00:00:00");
-    let label = "Competition starts in";
-    let subLabel = "at 26th November 2025";
+    let targetDate = new Date("2025-12-13T00:00:00");
+    let label = "Prelims starts in";
+    let subLabel = "at 13th December 2025";
 
     if (overviewData?.competition_progress) {
-        const { current_round, next_upcoming_round } = overviewData.competition_progress;
-        if (current_round.finish_time) {
-            targetDate = new Date(current_round.finish_time);
-            label = "Current round ends in";
-            subLabel = `at ${targetDate.toLocaleString()}`;
-        } else if (next_upcoming_round.date && next_upcoming_round.time) {
-            targetDate = new Date(`${next_upcoming_round.date}T${next_upcoming_round.time}`);
-            label = "Next round starts in";
-            subLabel = `at ${targetDate.toLocaleString()}`;
-        }
+      const { current_round, next_upcoming_round } = overviewData.competition_progress;
+      if (current_round.finish_time) {
+        targetDate = new Date(current_round.finish_time);
+        label = "Current round ends in";
+        subLabel = `at ${targetDate.toLocaleString()}`;
+      } else if (next_upcoming_round.date && next_upcoming_round.time) {
+        targetDate = new Date(`${next_upcoming_round.date}T${next_upcoming_round.time}`);
+        label = "Next round starts in";
+        subLabel = `at ${targetDate.toLocaleString()}`;
+      }
     }
 
     setCountdownLabel(label);
@@ -326,24 +326,24 @@ const Overview = ({ overviewData }: OverviewProps) => {
                   bottom: 5,
                 }}
               >
-                <XAxis 
-                  dataKey="name" 
+                <XAxis
+                  dataKey="name"
                   tick={{ fontSize: 12 }}
                 />
-                <YAxis 
+                <YAxis
                   tick={{ fontSize: 12 }}
                 />
-                <Tooltip 
+                <Tooltip
                   wrapperStyle={{ fontSize: '12px' }}
                 />
-                <Legend 
+                <Legend
                   wrapperStyle={{ fontSize: '12px' }}
                 />
-                <Line 
-                  type="monotone" 
-                  dataKey="value" 
-                  stroke="#2d4817" 
-                  activeDot={{ r: 6 }} 
+                <Line
+                  type="monotone"
+                  dataKey="value"
+                  stroke="#2d4817"
+                  activeDot={{ r: 6 }}
                   strokeWidth={2}
                 />
               </LineChart>
