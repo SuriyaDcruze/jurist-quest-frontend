@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useState, useEffect } from 'react'
 import axios from 'axios'
 
 export interface Announcement {
@@ -12,15 +12,16 @@ export interface Announcement {
 export type AnnouncementType = 'team' | 'jury'
 
 const useAdminAnnouncements = (type: AnnouncementType = 'team') => {
-    const queryClient = useQueryClient()
-    const token = localStorage.getItem('access_token')
+    const [announcements, setAnnouncements] = useState<Announcement[]>([])
+    const [isLoading, setIsLoading] = useState(true)
+    const [error, setError] = useState<Error | null>(null)
 
     const endpoint = type === 'jury' ? '/api/admin-jury-announcements/' : '/api/admin-announcements/'
-    const queryKey = type === 'jury' ? ['adminJuryAnnouncements'] : ['adminAnnouncements']
 
-    const { data: announcements = [], isLoading, error } = useQuery({
-        queryKey,
-        queryFn: async () => {
+    const fetchAnnouncements = async () => {
+        try {
+            setIsLoading(true)
+            const token = localStorage.getItem('access_token')
             const response = await axios.get(
                 `${import.meta.env.VITE_API_URL}${endpoint}`,
                 {
@@ -29,70 +30,69 @@ const useAdminAnnouncements = (type: AnnouncementType = 'team') => {
                     },
                 }
             )
-            return response.data
-        },
-    })
+            setAnnouncements(response.data)
+            setIsLoading(false)
+        } catch (err) {
+            setError(err as Error)
+            setIsLoading(false)
+        }
+    }
 
-    const createAnnouncement = useMutation({
-        mutationFn: async (announcementData: Partial<Announcement>) => {
-            const response = await axios.post(
-                `${import.meta.env.VITE_API_URL}${endpoint}`,
-                announcementData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            )
-            return response.data
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey })
-        },
-    })
+    useEffect(() => {
+        fetchAnnouncements()
+    }, [type]) // Re-fetch when type changes
 
-    const updateAnnouncement = useMutation({
-        mutationFn: async ({ id, data }: { id: number; data: Partial<Announcement> }) => {
-            const response = await axios.patch(
-                `${import.meta.env.VITE_API_URL}${endpoint}${id}/`,
-                data,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            )
-            return response.data
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey })
-        },
-    })
+    const createAnnouncement = async (announcementData: Partial<Announcement>) => {
+        const token = localStorage.getItem('access_token')
+        const response = await axios.post(
+            `${import.meta.env.VITE_API_URL}${endpoint}`,
+            announcementData,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        )
+        await fetchAnnouncements()
+        return response.data
+    }
 
-    const deleteAnnouncement = useMutation({
-        mutationFn: async (id: number) => {
-            await axios.delete(
-                `${import.meta.env.VITE_API_URL}${endpoint}${id}/`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            )
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey })
-        },
-    })
+    const updateAnnouncement = async ({ id, data }: { id: number; data: Partial<Announcement> }) => {
+        const token = localStorage.getItem('access_token')
+        const response = await axios.patch(
+            `${import.meta.env.VITE_API_URL}${endpoint}${id}/`,
+            data,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        )
+        await fetchAnnouncements()
+        return response.data
+    }
+
+    const deleteAnnouncement = async (id: number) => {
+        const token = localStorage.getItem('access_token')
+        await axios.delete(
+            `${import.meta.env.VITE_API_URL}${endpoint}${id}/`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        )
+        await fetchAnnouncements()
+    }
 
     return {
         announcements,
         isLoading,
         error,
-        createAnnouncement: createAnnouncement.mutateAsync,
-        updateAnnouncement: updateAnnouncement.mutateAsync,
-        deleteAnnouncement: deleteAnnouncement.mutateAsync,
-        refetch: () => queryClient.invalidateQueries({ queryKey }),
+        createAnnouncement,
+        updateAnnouncement,
+        deleteAnnouncement,
+        refetch: fetchAnnouncements,
     }
 }
 
