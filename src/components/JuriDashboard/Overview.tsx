@@ -17,7 +17,7 @@ const Overview = () => {
   const { overview, isLoading, error } = useJuryOverview();
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
 
-  const registrationEndDate = new Date("2025-11-26T00:00:00")
+  const registrationEndDate = new Date("2025-12-13T00:00:00")
 
   const calculateTimeLeft = () => {
     const now = new Date()
@@ -75,7 +75,7 @@ const Overview = () => {
 
             {/* Registration Ends In Block */}
             <div className="bg-white text-gray-900 border border-[#2d4817] rounded-lg p-3 md:p-4 text-center flex-shrink-0 w-full md:w-auto">
-              <p className="text-xs md:text-sm text-gray-900 mb-1">Competition starts in</p>
+              <p className="text-xs md:text-sm text-gray-900 mb-1">Prelims starts in</p>
               <div className="bg-[#2d4817] text-white rounded-md p-2 mb-2 inline-block min-w-[70px] md:min-w-[80px]">
                 <div className="text-2xl md:text-4xl font-bold flex flex-wrap justify-center gap-1 md:gap-2">
                   <span>{timeLeft.days.toString().padStart(2, "0")}D</span>
@@ -84,7 +84,7 @@ const Overview = () => {
                   <span>{timeLeft.seconds.toString().padStart(2, "0")}S</span>
                 </div>
               </div>
-              <p className="text-xs md:text-sm text-gray-900">at 26th November 2025</p>
+              <p className="text-xs md:text-sm text-gray-900">at 13th December 2025</p>
             </div>
           </div>
 
