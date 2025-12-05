@@ -1,6 +1,8 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Users, UserCheck, UserCog, CheckCircle } from "lucide-react"
 import useAdminOverview from "@/hooks/useAdminOverview"
+import { useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import {
     ResponsiveContainer,
     LineChart,
@@ -15,6 +17,13 @@ import {
 
 const Overview = () => {
     const { overview, isLoading, error } = useAdminOverview()
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        if (error) {
+            navigate("/")
+        }
+    }, [error, navigate])
 
     if (isLoading) {
         return (
@@ -70,10 +79,6 @@ const Overview = () => {
                 </div>
             </div>
         )
-    }
-
-    if (error) {
-        return <div className="p-6">Error: {error.message}</div>
     }
 
     const statsData = [
