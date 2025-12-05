@@ -19,7 +19,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { Plus, Edit, Trash2, Search } from "lucide-react"
+import { Plus, Edit, Trash2, Search, Loader2 } from "lucide-react"
 import useAdminJuries, { Jury } from "@/hooks/useAdminJuries"
 import { useToast } from "@/hooks/use-toast"
 
@@ -31,6 +31,7 @@ const JuryManagement = () => {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
     const [editingJury, setEditingJury] = useState<Jury | null>(null)
     const [deletingJury, setDeletingJury] = useState<Jury | null>(null)
+    const [isSubmitting, setIsSubmitting] = useState(false)
     const [formData, setFormData] = useState<Partial<Jury>>({
         name: '',
         user_name: '',
@@ -45,6 +46,28 @@ const JuryManagement = () => {
         jury.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         jury.user_name?.toLowerCase().includes(searchTerm.toLowerCase())
     )
+
+    // Validation function to check if all required fields are filled
+    const validateForm = () => {
+        const requiredFields = [
+            { field: 'name', label: 'Full Name' },
+            { field: 'user_name', label: 'Username' },
+            { field: 'email', label: 'Email' },
+        ]
+
+        // Password is only required when creating a new jury
+        if (!editingJury) {
+            requiredFields.push({ field: 'password', label: 'Password' })
+        }
+
+        const missingFields = requiredFields.filter(
+            ({ field }) => !formData[field as keyof typeof formData] || formData[field as keyof typeof formData] === ''
+        )
+
+        return missingFields
+    }
+
+    const isFormValid = validateForm().length === 0
 
     const handleOpenDialog = (jury?: Jury) => {
         if (jury) {
@@ -72,6 +95,18 @@ const JuryManagement = () => {
     }
 
     const handleSubmit = async () => {
+        // Validate form before submission
+        const missingFields = validateForm()
+        if (missingFields.length > 0) {
+            toast({
+                title: "Validation Error",
+                description: `Please fill in the following required fields: ${missingFields.map(f => f.label).join(', ')}`,
+                variant: "destructive",
+            })
+            return
+        }
+
+        setIsSubmitting(true)
         try {
             // Remove password from update if it's empty
             const dataToSubmit = { ...formData }
@@ -99,6 +134,8 @@ const JuryManagement = () => {
                 description: error.response?.data?.detail || "Failed to save jury",
                 variant: "destructive",
             })
+        } finally {
+            setIsSubmitting(false)
         }
     }
 
@@ -122,7 +159,70 @@ const JuryManagement = () => {
     }
 
     if (isLoading) {
-        return <div className="p-6">Loading juries...</div>
+        return (
+            <div className="p-4 md:p-6 space-y-6">
+                <Card>
+                    <CardHeader>
+                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                            <CardTitle className="text-2xl font-bold">Jury Management</CardTitle>
+                            <Button disabled className="bg-[#2d4817] hover:bg-[#1f3210]">
+                                <Plus className="h-4 w-4 mr-2" />
+                                Add New Jury
+                            </Button>
+                        </div>
+                    </CardHeader>
+                    <CardContent>
+                        {/* Search Skeleton */}
+                        <div className="mb-4">
+                            <div className="h-10 bg-gray-200 rounded-md animate-pulse"></div>
+                        </div>
+
+                        {/* Table Skeleton */}
+                        <div className="overflow-x-auto">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Name</TableHead>
+                                        <TableHead>Username</TableHead>
+                                        <TableHead>Email</TableHead>
+                                        <TableHead>Contact Number</TableHead>
+                                        <TableHead>Address</TableHead>
+                                        <TableHead className="text-right">Actions</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {[...Array(5)].map((_, index) => (
+                                        <TableRow key={index}>
+                                            <TableCell>
+                                                <div className="h-4 bg-gray-200 rounded animate-pulse w-32"></div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="h-4 bg-gray-200 rounded animate-pulse w-24"></div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="h-4 bg-gray-200 rounded animate-pulse w-40"></div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="h-4 bg-gray-200 rounded animate-pulse w-28"></div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="h-4 bg-gray-200 rounded animate-pulse w-48"></div>
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                <div className="flex justify-end gap-2">
+                                                    <div className="h-8 w-8 bg-gray-200 rounded animate-pulse"></div>
+                                                    <div className="h-8 w-8 bg-gray-200 rounded animate-pulse"></div>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+        )
     }
 
     return (
@@ -293,11 +393,22 @@ const JuryManagement = () => {
                         </div>
                     </div>
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                        <Button variant="outline" onClick={() => setIsDialogOpen(false)} disabled={isSubmitting}>
                             Cancel
                         </Button>
-                        <Button onClick={handleSubmit} className="bg-[#2d4817] hover:bg-[#1f3210]">
-                            {editingJury ? 'Update' : 'Create'} Jury
+                        <Button
+                            onClick={handleSubmit}
+                            className="bg-[#2d4817] hover:bg-[#1f3210]"
+                            disabled={isSubmitting || !isFormValid}
+                        >
+                            {isSubmitting ? (
+                                <>
+                                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                    {editingJury ? 'Updating...' : 'Creating...'}
+                                </>
+                            ) : (
+                                <>{editingJury ? 'Update' : 'Create'} Jury</>
+                            )}
                         </Button>
                     </DialogFooter>
                 </DialogContent>

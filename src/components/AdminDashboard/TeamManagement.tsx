@@ -91,6 +91,34 @@ const TeamManagement = () => {
         team.institution_name?.toLowerCase().includes(searchTerm.toLowerCase())
     )
 
+    // Validation function to check if all required fields are filled
+    const validateForm = () => {
+        const requiredFields = [
+            { field: 'team_representative_name', label: 'Team Representative Name' },
+            { field: 'team_representative_email', label: 'Representative Email' },
+            { field: 'speaker_1_name', label: 'Speaker 1 Name' },
+            { field: 'speaker_1_email', label: 'Speaker 1 Email' },
+            { field: 'speaker_1_course_type', label: 'Speaker 1 Course Type' },
+            { field: 'speaker_1_contact_number', label: 'Speaker 1 Contact' },
+            { field: 'speaker_2_name', label: 'Speaker 2 Name' },
+            { field: 'speaker_2_course_type', label: 'Speaker 2 Course Type' },
+            { field: 'researcher_name', label: 'Researcher Name' },
+            { field: 'institution_name', label: 'Institution Name' },
+            { field: 'class_teacher_name', label: 'Class Teacher Name' },
+            { field: 'class_teacher_contact_number', label: 'Teacher Contact' },
+            { field: 'current_round', label: 'Current Round' },
+            { field: 'user_password', label: 'Password' },
+        ]
+
+        const missingFields = requiredFields.filter(
+            ({ field }) => !formData[field as keyof typeof formData] || formData[field as keyof typeof formData] === ''
+        )
+
+        return missingFields
+    }
+
+    const isFormValid = validateForm().length === 0
+
     const handleOpenDialog = (team?: Team) => {
         if (team) {
             setEditingTeam(team)
@@ -160,6 +188,17 @@ const TeamManagement = () => {
     }
 
     const handleSubmit = async () => {
+        // Validate form before submission
+        const missingFields = validateForm()
+        if (missingFields.length > 0) {
+            toast({
+                title: "Validation Error",
+                description: `Please fill in the following required fields: ${missingFields.map(f => f.label).join(', ')}`,
+                variant: "destructive",
+            })
+            return
+        }
+
         setIsSubmitting(true)
         try {
             if (editingTeam) {
@@ -769,7 +808,11 @@ const TeamManagement = () => {
                         <Button variant="outline" onClick={() => setIsDialogOpen(false)} disabled={isSubmitting}>
                             Cancel
                         </Button>
-                        <Button onClick={handleSubmit} className="bg-[#2d4817] hover:bg-[#1f3210]" disabled={isSubmitting}>
+                        <Button
+                            onClick={handleSubmit}
+                            className="bg-[#2d4817] hover:bg-[#1f3210]"
+                            disabled={isSubmitting || !isFormValid}
+                        >
                             {isSubmitting ? (
                                 <>
                                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />

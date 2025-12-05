@@ -17,7 +17,59 @@ const Overview = () => {
     const { overview, isLoading, error } = useAdminOverview()
 
     if (isLoading) {
-        return <div className="p-6">Loading...</div>
+        return (
+            <div className="space-y-6 p-4 md:p-6">
+                {/* Header Card Skeleton */}
+                <Card className="bg-[#2d4817] text-white border-0 shadow-lg">
+                    <CardContent className="p-4 md:p-6">
+                        {/* Welcome Section Skeleton */}
+                        <div className="mb-6">
+                            <div className="h-8 bg-white/20 rounded animate-pulse w-64 mb-3"></div>
+                            <div className="h-4 bg-white/20 rounded animate-pulse w-full mb-2"></div>
+                            <div className="h-4 bg-white/20 rounded animate-pulse w-3/4"></div>
+                        </div>
+
+                        {/* Statistics Cards Skeleton */}
+                        <div className="mb-4">
+                            <div className="h-6 bg-white/20 rounded animate-pulse w-40 mb-3"></div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+                                {[...Array(4)].map((_, index) => (
+                                    <div key={index} className="bg-white rounded-lg p-3 md:p-4 border border-gray-200">
+                                        <div className="flex items-center gap-2 md:gap-3 mb-2">
+                                            <div className="w-8 h-8 md:w-10 md:h-10 bg-gray-200 rounded animate-pulse flex-shrink-0"></div>
+                                            <div className="h-5 bg-gray-200 rounded animate-pulse w-28"></div>
+                                        </div>
+                                        <div className="flex items-center gap-2 mt-2">
+                                            <div className="h-1.5 md:h-2 w-full bg-gray-200 rounded-full animate-pulse"></div>
+                                            <div className="h-4 bg-gray-200 rounded animate-pulse w-8"></div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Charts Section Skeleton */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Chart 1 Skeleton */}
+                    <Card className="shadow-lg border-0">
+                        <CardContent className="p-4 md:p-6">
+                            <div className="h-6 bg-gray-200 rounded animate-pulse w-48 mb-3"></div>
+                            <div className="h-64 md:h-80 bg-gray-100 rounded animate-pulse"></div>
+                        </CardContent>
+                    </Card>
+
+                    {/* Chart 2 Skeleton */}
+                    <Card className="shadow-lg border-0">
+                        <CardContent className="p-4 md:p-6">
+                            <div className="h-6 bg-gray-200 rounded animate-pulse w-48 mb-3"></div>
+                            <div className="h-64 md:h-80 bg-gray-100 rounded animate-pulse"></div>
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
+        )
     }
 
     if (error) {

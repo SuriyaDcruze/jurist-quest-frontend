@@ -19,7 +19,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { MessageSquare, Search, CheckCircle, Clock } from "lucide-react"
+import { MessageSquare, Search, CheckCircle, Clock, Loader2 } from "lucide-react"
 import useAdminClarifications, { Clarification } from "@/hooks/useAdminClarifications"
 import { useToast } from "@/hooks/use-toast"
 import ReactQuill from 'react-quill'
@@ -33,6 +33,7 @@ const ClarificationManagement = () => {
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [selectedClarification, setSelectedClarification] = useState<Clarification | null>(null)
     const [response, setResponse] = useState("")
+    const [isSubmitting, setIsSubmitting] = useState(false)
 
     const filteredClarifications = clarifications.filter(clarification =>
         clarification.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -47,6 +48,18 @@ const ClarificationManagement = () => {
 
     const handleSubmit = async () => {
         if (!selectedClarification) return
+
+        // Validate response
+        if (!response || response.trim() === '' || response === '<p><br></p>') {
+            toast({
+                title: "Validation Error",
+                description: "Please provide a response before submitting",
+                variant: "destructive",
+            })
+            return
+        }
+
+        setIsSubmitting(true)
         try {
             await updateClarification({ id: selectedClarification.id, data: { response } })
             toast({
@@ -60,6 +73,8 @@ const ClarificationManagement = () => {
                 description: error.response?.data?.detail || "Failed to send response",
                 variant: "destructive",
             })
+        } finally {
+            setIsSubmitting(false)
         }
     }
 
@@ -74,7 +89,72 @@ const ClarificationManagement = () => {
     }
 
     if (isLoading) {
-        return <div className="p-6">Loading clarifications...</div>
+        return (
+            <div className="p-4 md:p-6 space-y-6">
+                <Card>
+                    <CardHeader>
+                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                            <CardTitle className="text-2xl font-bold">Clarification Management</CardTitle>
+                            <div className="flex gap-4 text-sm">
+                                <div className="h-6 bg-gray-200 rounded animate-pulse w-24"></div>
+                                <div className="h-6 bg-gray-200 rounded animate-pulse w-24"></div>
+                            </div>
+                        </div>
+                    </CardHeader>
+                    <CardContent>
+                        {/* Search Skeleton */}
+                        <div className="mb-4">
+                            <div className="h-10 bg-gray-200 rounded-md animate-pulse"></div>
+                        </div>
+
+                        {/* Table Skeleton */}
+                        <div className="overflow-x-auto">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Team</TableHead>
+                                        <TableHead>Subject</TableHead>
+                                        <TableHead>Question</TableHead>
+                                        <TableHead>Status</TableHead>
+                                        <TableHead>Date</TableHead>
+                                        <TableHead className="text-right">Actions</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {[...Array(5)].map((_, index) => (
+                                        <TableRow key={index}>
+                                            <TableCell>
+                                                <div className="space-y-1">
+                                                    <div className="h-4 bg-gray-200 rounded animate-pulse w-20"></div>
+                                                    <div className="h-3 bg-gray-200 rounded animate-pulse w-32"></div>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="h-4 bg-gray-200 rounded animate-pulse w-32"></div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="h-4 bg-gray-200 rounded animate-pulse w-48"></div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="h-6 bg-gray-200 rounded-full animate-pulse w-20"></div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="h-4 bg-gray-200 rounded animate-pulse w-24"></div>
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                <div className="flex justify-end">
+                                                    <div className="h-8 w-8 bg-gray-200 rounded animate-pulse"></div>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+        )
     }
 
     return (
@@ -226,15 +306,22 @@ const ClarificationManagement = () => {
                         </div>
                     )}
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                        <Button variant="outline" onClick={() => setIsDialogOpen(false)} disabled={isSubmitting}>
                             Cancel
                         </Button>
                         <Button
                             onClick={handleSubmit}
                             className="bg-[#2d4817] hover:bg-[#1f3210]"
-                            disabled={!response}
+                            disabled={isSubmitting || !response || response.trim() === '' || response === '<p><br></p>'}
                         >
-                            Send Response
+                            {isSubmitting ? (
+                                <>
+                                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                    Sending...
+                                </>
+                            ) : (
+                                <>Send Response</>
+                            )}
                         </Button>
                     </DialogFooter>
                 </DialogContent>
