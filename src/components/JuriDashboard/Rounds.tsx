@@ -87,6 +87,84 @@ const JuryRounds = () => {
 
     return (
         <div className="p-4 md:p-6 space-y-6">
+            {/* Competition Schedule 2025/2026 */}
+            <div className="rounded-2xl bg-gradient-to-b from-secondary/60 to-background border border-border p-8 shadow-sm">
+                <h1 className="text-3xl md:text-4xl font-bold text-foreground">Competition Schedule 2025/2026</h1>
+                <p className="mt-2 text-muted-foreground">Key dates at a glance</p>
+
+                <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <Card className="transition-transform duration-200 hover:scale-[1.01] hover:shadow-md">
+                        <CardContent className="p-5">
+                            <div className="flex items-center justify-between mb-3">
+                                <div className="flex items-center gap-3">
+                                    <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                                        <Video className="h-5 w-5" />
+                                    </span>
+                                    <h3 className="text-lg font-semibold text-foreground">Prelims</h3>
+                                </div>
+                                <Badge variant="secondary">Virtual</Badge>
+                            </div>
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <Calendar className="h-4 w-4" />
+                                <span>13th December 2025</span>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="transition-transform duration-200 hover:scale-[1.01] hover:shadow-md">
+                        <CardContent className="p-5">
+                            <div className="flex items-center justify-between mb-3">
+                                <div className="flex items-center gap-3">
+                                    <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                                        <Video className="h-5 w-5" />
+                                    </span>
+                                    <h3 className="text-lg font-semibold text-foreground">Quarter Finals</h3>
+                                </div>
+                                <Badge variant="secondary">Virtual</Badge>
+                            </div>
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <Calendar className="h-4 w-4" />
+                                <span>13th December 2025 - 31st January 2026</span>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="transition-transform duration-200 hover:scale-[1.01] hover:shadow-md">
+                        <CardContent className="p-5">
+                            <div className="flex items-center justify-between mb-3">
+                                <div className="flex items-center gap-3">
+                                    <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                                        <MapPin className="h-5 w-5" />
+                                    </span>
+                                    <h3 className="text-lg font-semibold text-foreground">Semi-Finals</h3>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <Calendar className="h-4 w-4" />
+                                <span>13th December 2025 - 31st January 2026</span>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="transition-transform duration-200 hover:scale-[1.01] hover:shadow-md">
+                        <CardContent className="p-5">
+                            <div className="flex items-center justify-between mb-3">
+                                <div className="flex items-center gap-3">
+                                    <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                                        <Trophy className="h-5 w-5" />
+                                    </span>
+                                    <h3 className="text-lg font-semibold text-foreground">Finals</h3>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <Calendar className="h-4 w-4" />
+                                <span>31st January 2026</span>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
+
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Card className="border-l-4 border-l-orange-500">
@@ -279,5 +357,6 @@ const JuryRounds = () => {
         </div>
     )
 }
+
 
 export default JuryRounds
