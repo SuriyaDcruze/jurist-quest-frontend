@@ -174,6 +174,23 @@ const RoundManagement = () => {
                     description: "Round created successfully. Jury has been assigned to both teams.",
                 })
             }
+
+            // Reset form state
+            setEditingRound(null)
+            setFormData({
+                round_name: '',
+                team1: null,
+                team2: null,
+                date: '',
+                time: '',
+                duration_in_minutes: 60,
+                venue: '',
+                meet_url: '',
+                round_type: 'offline',
+            })
+            setSelectedJury(null)
+            setSelectedRound("")
+            setEligibleTeams([])
             setIsDialogOpen(false)
         } catch (error: any) {
             toast({

@@ -66,6 +66,10 @@ const ClarificationManagement = () => {
                 title: "Success",
                 description: "Response sent successfully. Team will be notified via email.",
             })
+
+            // Reset form state
+            setSelectedClarification(null)
+            setResponse('')
             setIsDialogOpen(false)
         } catch (error: any) {
             toast({

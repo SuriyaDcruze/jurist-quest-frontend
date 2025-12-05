@@ -105,6 +105,13 @@ const AnnouncementManagement = () => {
                     description: "Announcement created successfully",
                 })
             }
+
+            // Reset form state
+            setEditingAnnouncement(null)
+            setFormData({
+                name: '',
+                description: '',
+            })
             setIsDialogOpen(false)
         } catch (error: any) {
             toast({
