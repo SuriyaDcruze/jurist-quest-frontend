@@ -14,6 +14,7 @@ import {
 import { Calendar, MapPin, Video, Eye, Clock, Trophy, Target } from "lucide-react"
 import useJuryOwnRounds, { Round } from "@/hooks/useJuryOwnRounds"
 import RoundDetailsDialog from "./RoundDetailsDialog"
+import JuryRoundsSkeleton from "@/components/skeleton/JuriDashboard/JuryRoundsSkeleton"
 
 const JuryRounds = () => {
     const navigate = useNavigate()
@@ -78,7 +79,7 @@ const JuryRounds = () => {
     }
 
     if (isLoading) {
-        return <div className="p-6">Loading rounds...</div>
+        return <JuryRoundsSkeleton />
     }
 
     if (error) {
