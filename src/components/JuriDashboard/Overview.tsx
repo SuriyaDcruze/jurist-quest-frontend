@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Users, School, Trophy } from "lucide-react"
 import { useEffect, useState } from "react"
 import useJuryOverview from "@/hooks/useJuryOverview";
+import JuryOverviewSkeleton from "@/components/skeleton/JuriDashboard/JuryOverviewSkeleton"
 import {
   ResponsiveContainer,
   LineChart,
@@ -46,7 +47,7 @@ const Overview = () => {
   }, [])
 
   if (isLoading) {
-    return <div>Loading...</div>
+    return <JuryOverviewSkeleton />
   }
 
   if (error) {
@@ -161,24 +162,24 @@ const Overview = () => {
                   bottom: 5,
                 }}
               >
-                <XAxis 
-                  dataKey="name" 
+                <XAxis
+                  dataKey="name"
                   tick={{ fontSize: 12 }}
                 />
-                <YAxis 
+                <YAxis
                   tick={{ fontSize: 12 }}
                 />
-                <Tooltip 
+                <Tooltip
                   wrapperStyle={{ fontSize: '12px' }}
                 />
-                <Legend 
+                <Legend
                   wrapperStyle={{ fontSize: '12px' }}
                 />
-                <Line 
-                  type="monotone" 
-                  dataKey="value" 
-                  stroke="#2d4817" 
-                  activeDot={{ r: 6 }} 
+                <Line
+                  type="monotone"
+                  dataKey="value"
+                  stroke="#2d4817"
+                  activeDot={{ r: 6 }}
                   strokeWidth={2}
                 />
               </LineChart>
