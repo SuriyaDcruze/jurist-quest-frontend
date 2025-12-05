@@ -27,7 +27,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { Plus, Edit, Trash2, Search, Eye, X, FileText, Loader2 } from "lucide-react"
+import { Plus, Edit, Trash2, Search, Eye, X, FileText, Loader2, ExternalLink } from "lucide-react"
 import useAdminTeams, { Team } from "@/hooks/useAdminTeams"
 import useAdminJuries from "@/hooks/useAdminJuries"
 import { useToast } from "@/hooks/use-toast"
@@ -67,6 +67,9 @@ const TeamManagement = () => {
     const [teamMemorials, setTeamMemorials] = useState<Memorial[]>([])
     const [loadingMemorials, setLoadingMemorials] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [viewingPdfUrl, setViewingPdfUrl] = useState<string | null>(null)
+    const [isPdfViewerOpen, setIsPdfViewerOpen] = useState(false)
+    const [loadingPdf, setLoadingPdf] = useState(false)
     const [formData, setFormData] = useState<Partial<Team>>({
         current_round: 'Memorial',
         team_representative_name: '',
@@ -242,6 +245,33 @@ const TeamManagement = () => {
                 description: error.response?.data?.detail || "Failed to delete team",
                 variant: "destructive",
             })
+        }
+    }
+
+    const handleViewPdf = async (fileUrl: string) => {
+        setLoadingPdf(true)
+        setIsPdfViewerOpen(true)
+        try {
+            const token = localStorage.getItem('access_token')
+            const response = await axios.get(fileUrl, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                responseType: 'blob'
+            })
+            const blob = new Blob([response.data], { type: 'application/pdf' })
+            const objectUrl = URL.createObjectURL(blob)
+            setViewingPdfUrl(objectUrl)
+        } catch (error) {
+            console.error('Error loading PDF:', error)
+            toast({
+                title: "Error",
+                description: "Failed to load PDF file",
+                variant: "destructive",
+            })
+            setIsPdfViewerOpen(false)
+        } finally {
+            setLoadingPdf(false)
         }
     }
 
@@ -553,15 +583,24 @@ const TeamManagement = () => {
                                                         </p>
                                                     </div>
                                                     {memorial.file && (
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            onClick={() => window.open(`${import.meta.env.VITE_API_URL}${memorial.file}`, '_blank')}
-                                                            className="ml-2"
-                                                        >
-                                                            <FileText className="h-3 w-3 mr-1" />
-                                                            View File
-                                                        </Button>
+                                                        <div className="flex gap-2">
+                                                            <Button
+                                                                variant="outline"
+                                                                size="sm"
+                                                                onClick={() => handleViewPdf(`${import.meta.env.VITE_API_URL}${memorial.file}`)}
+                                                            >
+                                                                <Eye className="h-3 w-3 mr-1" />
+                                                                View File
+                                                            </Button>
+                                                            <Button
+                                                                variant="outline"
+                                                                size="sm"
+                                                                onClick={() => window.open(`${import.meta.env.VITE_API_URL}${memorial.file}`, '_blank')}
+                                                            >
+                                                                <ExternalLink className="h-3 w-3 mr-1" />
+                                                                Download File
+                                                            </Button>
+                                                        </div>
                                                     )}
                                                 </div>
                                             </div>
@@ -841,6 +880,50 @@ const TeamManagement = () => {
                         </Button>
                         <Button variant="destructive" onClick={handleDelete}>
                             Delete
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* PDF Viewer Dialog */}
+            <Dialog open={isPdfViewerOpen} onOpenChange={(open) => {
+                setIsPdfViewerOpen(open)
+                if (!open && viewingPdfUrl) {
+                    // Cleanup object URL when dialog closes
+                    URL.revokeObjectURL(viewingPdfUrl)
+                    setViewingPdfUrl(null)
+                }
+            }}>
+                <DialogContent className="max-w-6xl max-h-[95vh] p-0">
+                    <DialogHeader className="p-4 border-b">
+                        <DialogTitle>Memorial Document Viewer</DialogTitle>
+                    </DialogHeader>
+                    <div className="w-full h-[80vh] overflow-hidden bg-gray-100 flex items-center justify-center">
+                        {loadingPdf ? (
+                            <div className="flex flex-col items-center gap-3">
+                                <Loader2 className="h-8 w-8 animate-spin text-[#2d4817]" />
+                                <p className="text-gray-600">Loading PDF...</p>
+                            </div>
+                        ) : viewingPdfUrl ? (
+                            <embed
+                                src={`${viewingPdfUrl}#toolbar=0`}
+                                type="application/pdf"
+                                className="w-full h-full"
+                                title="PDF Viewer"
+                            />
+                        ) : (
+                            <p className="text-gray-500">No document selected</p>
+                        )}
+                    </div>
+                    <DialogFooter className="p-4 border-t">
+                        <Button variant="outline" onClick={() => {
+                            setIsPdfViewerOpen(false)
+                            if (viewingPdfUrl) {
+                                URL.revokeObjectURL(viewingPdfUrl)
+                                setViewingPdfUrl(null)
+                            }
+                        }}>
+                            Close
                         </Button>
                     </DialogFooter>
                 </DialogContent>
