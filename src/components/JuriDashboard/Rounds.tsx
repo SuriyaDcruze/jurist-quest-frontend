@@ -217,9 +217,7 @@ const JuryRounds = () => {
                             <TableHeader>
                                 <TableRow>
                                     <TableHead>Round</TableHead>
-                                    <TableHead>Teams</TableHead>
                                     <TableHead>Date & Time</TableHead>
-                                    <TableHead>Type</TableHead>
                                     <TableHead>Status</TableHead>
                                     <TableHead className="text-right">Actions</TableHead>
                                 </TableRow>
@@ -227,7 +225,7 @@ const JuryRounds = () => {
                             <TableBody>
                                 {rounds.length === 0 ? (
                                     <TableRow>
-                                        <TableCell colSpan={6} className="text-center text-gray-500">
+                                        <TableCell colSpan={4} className="text-center text-gray-500">
                                             No rounds assigned yet
                                         </TableCell>
                                     </TableRow>
@@ -236,34 +234,12 @@ const JuryRounds = () => {
                                         <TableRow key={round.id}>
                                             <TableCell className="font-medium">{round.round_name}</TableCell>
                                             <TableCell>
-                                                <div className="space-y-1">
-                                                    <p className="text-sm font-semibold">{round.team1?.team_id}</p>
-                                                    <p className="text-xs text-gray-500">vs</p>
-                                                    <p className="text-sm font-semibold">{round.team2?.team_id}</p>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>
                                                 <div className="flex items-center gap-2">
                                                     <Calendar className="h-4 w-4 text-gray-400" />
                                                     <div>
                                                         <p className="text-sm">{round.date}</p>
                                                         <p className="text-xs text-gray-500">{round.time}</p>
                                                     </div>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="flex items-center gap-2">
-                                                    {round.round_type === 'online' ? (
-                                                        <>
-                                                            <Video className="h-4 w-4 text-blue-500" />
-                                                            <span className="text-sm">Online</span>
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            <MapPin className="h-4 w-4 text-green-500" />
-                                                            <span className="text-sm">Offline</span>
-                                                        </>
-                                                    )}
                                                 </div>
                                             </TableCell>
                                             <TableCell>{getStatusBadge(round.status)}</TableCell>
@@ -321,26 +297,33 @@ const JuryRounds = () => {
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center justify-between pt-2 border-t">
-                                        <div className="flex items-center gap-2">
-                                            <span className="font-medium">{round.team1?.team_id || 'TBD'}</span>
-                                            <span className="text-gray-400 text-xs">VS</span>
-                                            <span className="font-medium">{round.team2?.team_id || 'TBD'}</span>
-                                        </div>
-                                        <div className="flex items-center gap-1 text-sm text-gray-600">
-                                            {round.round_type === 'online' ? (
-                                                <>
-                                                    <Video className="h-3 w-3" />
-                                                    Online
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <MapPin className="h-3 w-3" />
-                                                    Offline
-                                                </>
+                                    {/* Only show teams and round type if data is available (not upcoming) */}
+                                    {(round.team1 || round.team2 || round.round_type) && (
+                                        <div className="flex items-center justify-between pt-2 border-t">
+                                            {(round.team1 || round.team2) && (
+                                                <div className="flex items-center gap-2">
+                                                    <span className="font-medium">{round.team1?.team_id || 'TBD'}</span>
+                                                    <span className="text-gray-400 text-xs">VS</span>
+                                                    <span className="font-medium">{round.team2?.team_id || 'TBD'}</span>
+                                                </div>
+                                            )}
+                                            {round.round_type && (
+                                                <div className="flex items-center gap-1 text-sm text-gray-600">
+                                                    {round.round_type === 'online' ? (
+                                                        <>
+                                                            <Video className="h-3 w-3" />
+                                                            Online
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <MapPin className="h-3 w-3" />
+                                                            Offline
+                                                        </>
+                                                    )}
+                                                </div>
                                             )}
                                         </div>
-                                    </div>
+                                    )}
                                 </div>
                             ))
                         )}

@@ -29,7 +29,7 @@ const RoundDetails = () => {
       const ongoing = rounds.find(r => r.status === 'ongoing');
       const upcoming = rounds.filter(r => r.status === 'upcoming');
       const completed = rounds.filter(r => r.status !== 'ongoing' && r.status !== 'upcoming');
-      
+
       setOngoingRound(ongoing);
       setUpcomingRounds(upcoming);
       setCompletedRounds(completed);
@@ -50,26 +50,26 @@ const RoundDetails = () => {
 
   if (!rounds || rounds.length === 0) {
     return <div className="max-w-6xl mx-auto">
-        <Card className="border border-gray-200 rounded-xl shadow-sm overflow-hidden">
-          <CardContent className="p-6 text-center">
-            <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center mx-auto mb-4">
-              <Clock className="h-8 w-8 text-gray-500" />
-            </div>
-            <h3 className="font-semibold text-gray-700 text-lg mb-2">No Rounds Found</h3>
-            <p className="text-sm text-gray-600">There are no rounds scheduled at this time. Check back later for updates!</p>
-          </CardContent>
-        </Card>
-      </div>
+      <Card className="border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+        <CardContent className="p-6 text-center">
+          <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center mx-auto mb-4">
+            <Clock className="h-8 w-8 text-gray-500" />
+          </div>
+          <h3 className="font-semibold text-gray-700 text-lg mb-2">No Rounds Found</h3>
+          <p className="text-sm text-gray-600">There are no rounds scheduled at this time. Check back later for updates!</p>
+        </CardContent>
+      </Card>
+    </div>
   }
 
   const getCompletedRoundStatus = (round) => {
     if (round.status && round.status.startsWith("Winner:")) {
-        const winnerTeamId = round.status.split(" ")[1];
-        if (winnerTeamId === teamData?.team_id) {
-            return "Won";
-        } else {
-            return "Lost";
-        }
+      const winnerTeamId = round.status.split(" ")[1];
+      if (winnerTeamId === teamData?.team_id) {
+        return "Won";
+      } else {
+        return "Lost";
+      }
     }
     return "Evaluating";
   }
@@ -89,9 +89,8 @@ const RoundDetails = () => {
         <div className="mb-8">
           <button
             onClick={handleCloseDetails}
-            className={`flex items-center gap-2 text-[#2d4817] hover:text-[#233a12] font-medium transition-colors duration-200 mb-4 ${
-              !selectedRound && "invisible"
-            }`}
+            className={`flex items-center gap-2 text-[#2d4817] hover:text-[#233a12] font-medium transition-colors duration-200 mb-4 ${!selectedRound && "invisible"
+              }`}
           >
             <ChevronLeft className="h-5 w-5" />
             Back to overview
@@ -134,7 +133,7 @@ const RoundDetails = () => {
                         )}
                         <span>{ongoingRound.round_type === "online" ? "Online Meeting" : ongoingRound.venue}</span>
                       </div>
-                     
+
                     </div>
 
                     <div className="bg-gray-50 rounded-lg p-4">
@@ -239,20 +238,18 @@ const RoundDetails = () => {
                     completedRounds.map(round => {
                       const status = getCompletedRoundStatus(round);
                       return (
-                        <div key={round.id} className={`rounded-lg p-4 text-center ${
-                          status === "Won"
-                            ? "bg-green-50 border border-green-200"
-                            : status === "Lost"
-                              ? "bg-red-50 border border-red-200"
-                              : "bg-orange-50 border border-orange-200"
-                        }`}>
-                          <h3 className={`text-lg font-bold mb-1 ${
-                            status === "Won"
-                              ? "text-green-700"
-                              : status === "Lost"
-                                ? "text-red-700"
-                                : "text-orange-700"
+                        <div key={round.id} className={`rounded-lg p-4 text-center ${status === "Won"
+                          ? "bg-green-50 border border-green-200"
+                          : status === "Lost"
+                            ? "bg-red-50 border border-red-200"
+                            : "bg-orange-50 border border-orange-200"
                           }`}>
+                          <h3 className={`text-lg font-bold mb-1 ${status === "Won"
+                            ? "text-green-700"
+                            : status === "Lost"
+                              ? "text-red-700"
+                              : "text-orange-700"
+                            }`}>
                             {round.round_name}: {status}
                           </h3>
                           <p className="text-sm text-gray-600">
@@ -310,7 +307,9 @@ const RoundDetails = () => {
                         <MapPin className="h-4 w-4" />
                       )}
                       <span>
-                        {selectedRound.round_type === "online" && selectedRound.status !== "evaluating" ? (
+                        {selectedRound.round_type === "online" &&
+                          selectedRound.status !== "evaluating" &&
+                          !selectedRound.status.startsWith("Winner:") ? (
                           <a
                             href={selectedRound.meet_url}
                             target="_blank"
@@ -333,20 +332,18 @@ const RoundDetails = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
                   {/* Team 1 - Left Side */}
                   <div
-                    className={`p-8 ${
-                      selectedRound.team1?.id === teamData?.id
-                        ? "bg-[#2d4817]/5 border-t-2 border-[#2d4817]"
-                        : "bg-white"
-                    }`}
+                    className={`p-8 ${selectedRound.team1?.id === teamData?.id
+                      ? "bg-[#2d4817]/5 border-t-2 border-[#2d4817]"
+                      : "bg-white"
+                      }`}
                   >
                     <div className="flex flex-col items-center text-center mb-6">
                       <div className="w-20 h-20 rounded-full bg-[#2d4817]/10 flex items-center justify-center mb-3">
                         <User className="h-8 w-8 text-[#2d4817]" />
                       </div>
                       <h3
-                        className={`text-xl font-bold ${
-                          selectedRound.team1?.id === teamData?.id ? "text-[#2d4817]" : "text-gray-900"
-                        }`}
+                        className={`text-xl font-bold ${selectedRound.team1?.id === teamData?.id ? "text-[#2d4817]" : "text-gray-900"
+                          }`}
                       >
                         {selectedRound.team1?.team_id}
                       </h3>
@@ -390,20 +387,18 @@ const RoundDetails = () => {
 
                   {/* Team 2 - Right Side */}
                   <div
-                    className={`p-8 ${
-                      selectedRound.team2?.id === teamData?.id
-                        ? "bg-[#2d4817]/5 border-t-2 border-[#2d4817]"
-                        : "bg-white"
-                    }`}
+                    className={`p-8 ${selectedRound.team2?.id === teamData?.id
+                      ? "bg-[#2d4817]/5 border-t-2 border-[#2d4817]"
+                      : "bg-white"
+                      }`}
                   >
                     <div className="flex flex-col items-center text-center mb-6">
                       <div className="w-20 h-20 rounded-full bg-[#2d4817]/10 flex items-center justify-center mb-3">
                         <User className="h-8 w-8 text-[#2d4817]" />
                       </div>
                       <h3
-                        className={`text-xl font-bold ${
-                          selectedRound.team2?.id === teamData?.id ? "text-[#2d4817]" : "text-gray-900"
-                        }`}
+                        className={`text-xl font-bold ${selectedRound.team2?.id === teamData?.id ? "text-[#2d4817]" : "text-gray-900"
+                          }`}
                       >
                         {selectedRound.team2?.team_id}
                       </h3>
