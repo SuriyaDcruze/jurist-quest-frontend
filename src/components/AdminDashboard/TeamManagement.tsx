@@ -27,7 +27,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { Plus, Edit, Trash2, Search, Eye, X, FileText } from "lucide-react"
+import { Plus, Edit, Trash2, Search, Eye, X, FileText, Loader2 } from "lucide-react"
 import useAdminTeams, { Team } from "@/hooks/useAdminTeams"
 import useAdminJuries from "@/hooks/useAdminJuries"
 import { useToast } from "@/hooks/use-toast"
@@ -66,6 +66,7 @@ const TeamManagement = () => {
     const [viewingTeam, setViewingTeam] = useState<Team | null>(null)
     const [teamMemorials, setTeamMemorials] = useState<Memorial[]>([])
     const [loadingMemorials, setLoadingMemorials] = useState(false)
+    const [isSubmitting, setIsSubmitting] = useState(false)
     const [formData, setFormData] = useState<Partial<Team>>({
         current_round: 'Memorial',
         team_representative_name: '',
@@ -159,6 +160,7 @@ const TeamManagement = () => {
     }
 
     const handleSubmit = async () => {
+        setIsSubmitting(true)
         try {
             if (editingTeam) {
                 await updateTeam(editingTeam.id, formData)
@@ -180,6 +182,8 @@ const TeamManagement = () => {
                 description: error.response?.data?.detail || "Failed to save team",
                 variant: "destructive",
             })
+        } finally {
+            setIsSubmitting(false)
         }
     }
 
@@ -203,7 +207,67 @@ const TeamManagement = () => {
     }
 
     if (isLoading) {
-        return <div className="p-6">Loading teams...</div>
+        return (
+            <div className="p-4 md:p-6 space-y-6">
+                <Card>
+                    <CardHeader>
+                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                            <CardTitle className="text-2xl font-bold">Team Management</CardTitle>
+                            <Button disabled className="bg-[#2d4817] hover:bg-[#1f3210]">
+                                <Plus className="h-4 w-4 mr-2" />
+                                Add New Team
+                            </Button>
+                        </div>
+                    </CardHeader>
+                    <CardContent>
+                        {/* Search Skeleton */}
+                        <div className="mb-4">
+                            <div className="h-10 bg-gray-200 rounded-md animate-pulse"></div>
+                        </div>
+
+                        {/* Table Skeleton */}
+                        <div className="overflow-x-auto">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Team ID</TableHead>
+                                        <TableHead>Representative</TableHead>
+                                        <TableHead>Institution</TableHead>
+                                        <TableHead>Status</TableHead>
+                                        <TableHead className="text-right">Actions</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {[...Array(5)].map((_, index) => (
+                                        <TableRow key={index}>
+                                            <TableCell>
+                                                <div className="h-4 bg-gray-200 rounded animate-pulse w-20"></div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="h-4 bg-gray-200 rounded animate-pulse w-32"></div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="h-4 bg-gray-200 rounded animate-pulse w-40"></div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="h-6 bg-gray-200 rounded-full animate-pulse w-24"></div>
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                <div className="flex justify-end gap-2">
+                                                    <div className="h-8 w-8 bg-gray-200 rounded animate-pulse"></div>
+                                                    <div className="h-8 w-8 bg-gray-200 rounded animate-pulse"></div>
+                                                    <div className="h-8 w-8 bg-gray-200 rounded animate-pulse"></div>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+        )
     }
 
     return (
@@ -702,11 +766,18 @@ const TeamManagement = () => {
                         </div>
                     </div>
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                        <Button variant="outline" onClick={() => setIsDialogOpen(false)} disabled={isSubmitting}>
                             Cancel
                         </Button>
-                        <Button onClick={handleSubmit} className="bg-[#2d4817] hover:bg-[#1f3210]">
-                            {editingTeam ? 'Update' : 'Create'} Team
+                        <Button onClick={handleSubmit} className="bg-[#2d4817] hover:bg-[#1f3210]" disabled={isSubmitting}>
+                            {isSubmitting ? (
+                                <>
+                                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                    {editingTeam ? 'Updating...' : 'Creating...'}
+                                </>
+                            ) : (
+                                <>{editingTeam ? 'Update' : 'Create'} Team</>
+                            )}
                         </Button>
                     </DialogFooter>
                 </DialogContent>
