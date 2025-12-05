@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
 
 export interface Clarification {
@@ -18,14 +18,12 @@ export interface Clarification {
 }
 
 const useAdminClarifications = () => {
-    const [clarifications, setClarifications] = useState<Clarification[]>([])
-    const [isLoading, setIsLoading] = useState(true)
-    const [error, setError] = useState<Error | null>(null)
+    const queryClient = useQueryClient()
+    const token = localStorage.getItem('access_token')
 
-    const fetchClarifications = async () => {
-        try {
-            setIsLoading(true)
-            const token = localStorage.getItem('access_token')
+    const { data: clarifications = [], isLoading, error } = useQuery({
+        queryKey: ['adminClarifications'],
+        queryFn: async () => {
             const response = await axios.get(
                 `${import.meta.env.VITE_API_URL}/api/admin-clarifications/`,
                 {
@@ -34,39 +32,34 @@ const useAdminClarifications = () => {
                     },
                 }
             )
-            setClarifications(response.data)
-            setIsLoading(false)
-        } catch (err) {
-            setError(err as Error)
-            setIsLoading(false)
-        }
-    }
+            return response.data
+        },
+    })
 
-    useEffect(() => {
-        fetchClarifications()
-    }, [])
-
-    const updateClarification = async ({ id, data }: { id: number; data: { response: string } }) => {
-        const token = localStorage.getItem('access_token')
-        const response = await axios.patch(
-            `${import.meta.env.VITE_API_URL}/api/admin-clarifications/${id}/`,
-            data,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }
-        )
-        await fetchClarifications()
-        return response.data
-    }
+    const updateClarification = useMutation({
+        mutationFn: async ({ id, data }: { id: number; data: { response: string } }) => {
+            const response = await axios.patch(
+                `${import.meta.env.VITE_API_URL}/api/admin-clarifications/${id}/`,
+                data,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            )
+            return response.data
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['adminClarifications'] })
+        },
+    })
 
     return {
         clarifications,
         isLoading,
         error,
-        updateClarification,
-        refetch: fetchClarifications,
+        updateClarification: updateClarification.mutateAsync,
+        refetch: () => queryClient.invalidateQueries({ queryKey: ['adminClarifications'] }),
     }
 }
 

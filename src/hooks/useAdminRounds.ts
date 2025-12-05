@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
 
 export interface TeamMarks {
@@ -71,14 +71,12 @@ export interface EligibleTeam {
 }
 
 const useAdminRounds = () => {
-    const [rounds, setRounds] = useState<Round[]>([])
-    const [isLoading, setIsLoading] = useState(true)
-    const [error, setError] = useState<Error | null>(null)
+    const queryClient = useQueryClient()
+    const token = localStorage.getItem('access_token')
 
-    const fetchRounds = async () => {
-        try {
-            setIsLoading(true)
-            const token = localStorage.getItem('access_token')
+    const { data: rounds = [], isLoading, error } = useQuery({
+        queryKey: ['adminRounds'],
+        queryFn: async () => {
             const response = await axios.get(
                 `${import.meta.env.VITE_API_URL}/api/admin/rounds/`,
                 {
@@ -87,63 +85,63 @@ const useAdminRounds = () => {
                     },
                 }
             )
-            setRounds(response.data)
-            setIsLoading(false)
-        } catch (err) {
-            setError(err as Error)
-            setIsLoading(false)
-        }
-    }
+            return response.data
+        },
+    })
 
-    useEffect(() => {
-        fetchRounds()
-    }, [])
+    const createRound = useMutation({
+        mutationFn: async (roundData: Partial<Round>) => {
+            const response = await axios.post(
+                `${import.meta.env.VITE_API_URL}/api/admin/rounds/`,
+                roundData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            )
+            return response.data
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['adminRounds'] })
+        },
+    })
 
-    const createRound = async (roundData: Partial<Round>) => {
-        const token = localStorage.getItem('access_token')
-        const response = await axios.post(
-            `${import.meta.env.VITE_API_URL}/api/admin/rounds/`,
-            roundData,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }
-        )
-        await fetchRounds()
-        return response.data
-    }
+    const updateRound = useMutation({
+        mutationFn: async ({ id, data }: { id: number; data: Partial<Round> }) => {
+            const response = await axios.patch(
+                `${import.meta.env.VITE_API_URL}/api/admin/rounds/${id}/`,
+                data,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            )
+            return response.data
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['adminRounds'] })
+        },
+    })
 
-    const updateRound = async ({ id, data }: { id: number; data: Partial<Round> }) => {
-        const token = localStorage.getItem('access_token')
-        const response = await axios.patch(
-            `${import.meta.env.VITE_API_URL}/api/admin/rounds/${id}/`,
-            data,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }
-        )
-        await fetchRounds()
-        return response.data
-    }
-
-    const deleteRound = async (id: number) => {
-        const token = localStorage.getItem('access_token')
-        await axios.delete(
-            `${import.meta.env.VITE_API_URL}/api/admin/rounds/${id}/`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }
-        )
-        await fetchRounds()
-    }
+    const deleteRound = useMutation({
+        mutationFn: async (id: number) => {
+            await axios.delete(
+                `${import.meta.env.VITE_API_URL}/api/admin/rounds/${id}/`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            )
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['adminRounds'] })
+        },
+    })
 
     const getEligibleTeams = async (roundName: string, juryId?: number): Promise<EligibleTeam[]> => {
-        const token = localStorage.getItem('access_token')
         const params = new URLSearchParams({ round_name: roundName })
         if (juryId) {
             params.append('jury_id', juryId.toString())
@@ -164,11 +162,11 @@ const useAdminRounds = () => {
         rounds,
         isLoading,
         error,
-        createRound,
-        updateRound,
-        deleteRound,
+        createRound: createRound.mutateAsync,
+        updateRound: updateRound.mutateAsync,
+        deleteRound: deleteRound.mutateAsync,
         getEligibleTeams,
-        refetch: fetchRounds,
+        refetch: () => queryClient.invalidateQueries({ queryKey: ['adminRounds'] }),
     }
 }
 
