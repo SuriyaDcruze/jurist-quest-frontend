@@ -10,6 +10,7 @@ import {
   LogOut,
   ChevronDown,
   User,
+  Calendar,
 } from "lucide-react"
 import { TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
@@ -39,46 +40,63 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }: SidebarProps) => {
       {/* Navigation */}
       <nav className="flex-1 p-4 overflow-y-auto">
         <TabsList className="grid grid-cols-1 h-auto bg-transparent space-y-2 p-0">
-            {/* Regular Menu Items */}
-            {/* Dashboard - Featured Button */}
-          <TabsTrigger 
-            value="overview" 
+          {/* Regular Menu Items */}
+          {/* Dashboard - Featured Button */}
+          <TabsTrigger
+            value="overview"
             className="w-full bg-transparent hover:bg-gray-50 text-gray-700 rounded-lg h-12 flex items-center justify-start gap-3 px-4 data-[state=active]:[background-color:#2d4817] data-[state=active]:text-white font-medium"
           >
             <LayoutDashboard className="h-5 w-5" />
             <span>Dashboard</span>
           </TabsTrigger>
-          <TabsTrigger 
-            value="announcement" 
+          <TabsTrigger
+            value="announcement"
             className="w-full bg-transparent hover:bg-gray-50 text-gray-700 rounded-lg h-12 flex items-center justify-start gap-3 px-4 data-[state=active]:[background-color:#2d4817] data-[state=active]:text-white border-none"
           >
             <Bell className="h-5 w-5" />
             <span>Announcement</span>
           </TabsTrigger>
-          
 
-          <TabsTrigger 
-            value="team" 
+          <TabsTrigger
+            value="calendar"
+            className="w-full bg-transparent hover:bg-gray-50 text-gray-700 rounded-lg h-12 flex items-center justify-start gap-3 px-4 data-[state=active]:[background-color:#2d4817] data-[state=active]:text-white border-none"
+          >
+            <Calendar className="h-5 w-5" />
+            <span>Calendar</span>
+          </TabsTrigger>
+
+          <TabsTrigger
+            value="rounds"
+            className="w-full bg-transparent hover:bg-gray-50 text-gray-700 rounded-lg h-12 flex items-center justify-start gap-3 px-4 data-[state=active]:[background-color:#2d4817] data-[state=active]:text-white border-none"
+          >
+            <Calendar className="h-5 w-5" />
+            <span>Rounds</span>
+          </TabsTrigger>
+
+          {/* Hidden Items
+          <TabsTrigger
+            value="team"
             className="w-full bg-transparent hover:bg-gray-50 text-gray-700 rounded-lg h-12 flex items-center justify-start gap-3 px-4 data-[state=active]:[background-color:#2d4817] data-[state=active]:text-white border-none"
           >
             <User className="h-5 w-5" />
             <span>Teams</span>
           </TabsTrigger>
 
-          <TabsTrigger 
-            value="profile" 
+          <TabsTrigger
+            value="profile"
             className="w-full bg-transparent hover:bg-gray-50 text-gray-700 rounded-lg h-12 flex items-center justify-start gap-3 px-4 data-[state=active]:[background-color:#2d4817] data-[state=active]:text-white border-none"
           >
             <User className="h-5 w-5" />
             <span>Profile</span>
           </TabsTrigger>
+          */}
         </TabsList>
       </nav>
 
       {/* Logout Button */}
       <div className="p-4 border-t border-gray-100">
-        <Button 
-          variant="ghost" 
+        <Button
+          variant="ghost"
           className="w-full bg-[#2d4817] text-white rounded-lg h-12 flex items-center justify-start gap-3 px-4 hover:bg-[#2d4817] hover:text-white"
           onClick={() => {
             localStorage.clear()

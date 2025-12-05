@@ -11,6 +11,13 @@ const Index = () => {
 
   const handleLogin = async (data: any) => {
     setIsLoggedIn(true)
+
+    // Check if user is admin
+    if (data.user_type === "admin" || data.is_superuser) {
+      navigate("/admin-dashboard")
+      return
+    }
+
     if (data.user_type === "jurymember") {
       const accessToken = localStorage.getItem("access_token")
       const response = await axios.get(
@@ -36,3 +43,4 @@ const Index = () => {
 }
 
 export default Index
+

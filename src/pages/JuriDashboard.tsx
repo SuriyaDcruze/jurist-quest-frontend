@@ -26,6 +26,8 @@ import Team from "@/components/JuriDashboard/Team";
 import Mark from "@/components/JuriDashboard/Marks";
 import Memorial from "@/components/JuriDashboard/Memorial";
 import Round from "@/components/JuriDashboard/Round";
+import Rounds from "@/components/JuriDashboard/Rounds";
+import JuryCalendar from "@/components/JuriDashboard/JuryCalendar";
 
 import Sidebar from "@/components/JuriDashboard/sidebar";
 import Profile from "@/components/JuriDashboard/Profile";
@@ -74,9 +76,9 @@ const Dashboard = () => {
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-white flex">
       <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-      
+
       {isSidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
           onClick={toggleSidebar}
         ></div>
@@ -88,8 +90,8 @@ const Dashboard = () => {
             <Menu className="h-6 w-6" />
           </Button>
           <div className="flex items-center gap-3  h-5">
-              <img src={Logo} className=" h-16 sm:w-21 sm:h-21 " alt="Logo" />
-            </div>
+            <img src={Logo} className=" h-16 sm:w-21 sm:h-21 " alt="Logo" />
+          </div>
         </div>
 
         <div className="container mx-auto px-4 py-6">
@@ -105,19 +107,27 @@ const Dashboard = () => {
             <AnnouncementFeed />
           </TabsContent>
 
+          <TabsContent value="calendar">
+            <JuryCalendar />
+          </TabsContent>
+
+          <TabsContent value="rounds">
+            <Rounds />
+          </TabsContent>
+
           <TabsContent value="team">
-            <Team/>
+            <Team />
           </TabsContent>
 
           <TabsContent value="profile">
-            <Profile/>
+            <Profile />
           </TabsContent>
 
           <TabsContent value="memorial">
-            <Memorial/>
+            <Memorial />
           </TabsContent>
           <TabsContent value="round">
-            <Round/>
+            <Round />
           </TabsContent>
         </div>
       </main>

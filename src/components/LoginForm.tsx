@@ -42,9 +42,16 @@ const Index = ({ onLogin }: LoginFormProps) => {
         username: username,
         password: password,
       });
-      const { access, refresh, user_type } = response.data;
+      const { access, refresh, user_type, is_superuser } = response.data;
       localStorage.setItem('access_token', access);
       localStorage.setItem('refresh_token', refresh);
+
+      // Check if user is admin/superuser
+      if (user_type === 'admin' || is_superuser) {
+        localStorage.setItem('user_type', 'admin');
+        onLogin({ user_type: 'admin', is_superuser: true });
+        return;
+      }
 
       if (user_type === 'jurymember') {
         onLogin({ user_type });
@@ -102,7 +109,7 @@ const Index = ({ onLogin }: LoginFormProps) => {
         <div className="w-full max-w-4xl rounded-lg overflow-hidden shadow-2xl flex flex-col lg:flex-row bg-white/15 backdrop-blur-xl border-white/25">
           {/* Left Panel (Solid Dark Green) */}
           <div className="w-full lg:w-1/2 [background-color:#2d4817] text-white p-8 flex flex-col items-center justify-center text-center py-12 lg:py-0">
-          
+
 
             {/* Logo and Moot Court text - moved here */}
             <div className="flex items-center justify-center gap-3 mb-4">
@@ -116,7 +123,7 @@ const Index = ({ onLogin }: LoginFormProps) => {
             <p className="text-center text-white/80 mb-8">
               Use the team code and password sent to your email to log in and access your dashboard.
             </p>
-           
+
           </div>
 
           {/* Right Panel (Login Form) - now transparent to show parent's blur */}
