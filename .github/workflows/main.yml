@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: [ self-hosted, linux ]
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
@@ -17,9 +17,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
 
       - name: Build React app
         run: npm run build
@@ -28,4 +34,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: juristquest-build
-          path: build   # change to dist if Vite
+          path: dist
