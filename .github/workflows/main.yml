@@ -1,4 +1,4 @@
-name: JuristQuest Build
+name: JuristQuest Build & Deploy
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted   # 👈 MAIN CHANGE (run on your EC2)
 
     steps:
       - name: Checkout repository
@@ -30,9 +30,11 @@ jobs:
       - name: Build React app
         run: npm run build
 
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: juristquest-build
-          path: dist
-          
+      # 🟢 Deploy build to nginx ROOT
+      - name: Deploy to Nginx
+        run: |
+          sudo rm -rf /var/www/html/*
+          sudo cp -r build/* /var/www/html/
+          sudo chown -R nginx:nginx /var/www/html
+          sudo systemctl restart nginx
+
