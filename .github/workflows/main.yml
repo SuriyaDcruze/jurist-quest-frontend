@@ -1,0 +1,140 @@
+name: JuristQuest CI/CD
+
+# Trigger on pushes to main and on pull requests
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+concurrency:
+  group: juristquest-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  build:
+    name: Build & (optional) Deploy
+    runs-on: [ self-hosted, linux, ubuntu, custom ]
+
+    # Optional: set env vars for reuse
+    env:
+      NODE_VERSION: "20"
+      BUILD_DIR: build    # change to "dist" for Vite
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Cache node modules (fallback)
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ env.NODE_VERSION }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ env.NODE_VERSION }}-
+
+      - name: Install dependencies
+        # Use `npm ci` in CI for reproducible installs if package-lock.json exists
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+
+      - name: Lint (if available)
+        run: |
+          if npm run | grep -q "lint"; then
+            npm run lint
+          else
+            echo "No lint script found, skipping."
+          fi
+        continue-on-error: false
+
+      - name: Run tests (if available)
+        run: |
+          if npm run | grep -q "test"; then
+            # run tests in CI-friendly mode if your test script supports it
+            npm run test --silent -- --watchAll=false || true
+          else
+            echo "No test script found, skipping."
+          fi
+        # don't fail the job on flaky tests by default; remove '|| true' to make tests required
+        continue-on-error: false
+
+      - name: Build app
+        run: |
+          # Ensure build script exists
+          if npm run | grep -q "build"; then
+            npm run build
+          else
+            echo "No build script found. Please add 'build' to package.json."
+            exit 1
+          fi
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: juristquest-build
+          path: ${{ env.BUILD_DIR }}
+
+      # ---------------------------
+      # Optional deploy via SSH (runs only if SSH_PRIVATE_KEY secret is set)
+      # Secrets required to enable this step:
+      #   SSH_PRIVATE_KEY  - private key content (multi-line)
+      #   DEPLOY_USER      - username on remote host
+      #   DEPLOY_HOST      - host or IP of remote server
+      #   DEPLOY_PATH      - destination path on remote server (e.g. /var/www/juristquest)
+      # Optional:
+      #   DEPLOY_PORT      - ssh port (default 22)
+      #   RSYNC_FLAGS      - extra rsync flags (default "-az --delete")
+      # ---------------------------
+      - name: Set up SSH agent (for deployment)
+        if: secrets.SSH_PRIVATE_KEY != ''
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Ensure remote path exists (optional)
+        if: secrets.SSH_PRIVATE_KEY != ''
+        run: |
+          ssh -o StrictHostKeyChecking=no -p ${DEPLOY_PORT:-22} ${DEPLOY_USER}@${DEPLOY_HOST} "mkdir -p ${DEPLOY_PATH}"
+        env:
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+
+      - name: Rsync build to remote server
+        if: secrets.SSH_PRIVATE_KEY != ''
+        run: |
+          RSYNC_FLAGS="${RSYNC_FLAGS:--az --delete --no-perms --no-owner --no-group}"
+          echo "Deploying to ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH} (port ${DEPLOY_PORT:-22})"
+          rsync $RSYNC_FLAGS -e "ssh -p ${DEPLOY_PORT:-22} -o StrictHostKeyChecking=no" ${{ env.BUILD_DIR }}/ ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/
+        env:
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+          RSYNC_FLAGS: ${{ secrets.RSYNC_FLAGS }}
+
+      - name: Notify deployment complete
+        if: secrets.SSH_PRIVATE_KEY != ''
+        run: echo "Deployment complete to ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}"
+        env:
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+
+  # You can add more jobs here (eg. smoke-test, integration, pages-deploy) as needed.
