@@ -49,3 +49,4 @@ jobs:
           script: |
             sudo chown -R nginx:nginx /usr/share/nginx/html
             sudo systemctl restart nginx
+
