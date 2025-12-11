@@ -141,12 +141,10 @@ const RoundDetails = () => {
                       <div className="flex items-center justify-between">
                         <div className="text-center">
                           <p className="font-semibold text-gray-900">{ongoingRound.team1?.team_id}</p>
-                          <p className="text-xs text-gray-500">{ongoingRound.team1?.institution_name}</p>
                         </div>
                         <div className="px-3 py-1 bg-[#2d4817] text-white rounded-full text-xs font-medium">VS</div>
                         <div className="text-center">
                           <p className="font-semibold text-gray-900">{ongoingRound.team2?.team_id}</p>
-                          <p className="text-xs text-gray-500">{ongoingRound.team2?.institution_name}</p>
                         </div>
                       </div>
                     </div>
@@ -347,7 +345,6 @@ const RoundDetails = () => {
                       >
                         {selectedRound.team1?.team_id}
                       </h3>
-                      <p className="text-sm text-gray-500">{selectedRound.team1?.institution_name}</p>
                     </div>
                   </div>
 
@@ -377,7 +374,6 @@ const RoundDetails = () => {
                       >
                         {selectedRound.team2?.team_id}
                       </h3>
-                      <p className="text-sm text-gray-500">{selectedRound.team2?.institution_name}</p>
                     </div>
                   </div>
                 </div>
