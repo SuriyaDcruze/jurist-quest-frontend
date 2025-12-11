@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted   # 👈 MAIN CHANGE (run on your EC2)
+    runs-on: self-hosted
 
     steps:
       - name: Checkout repository
@@ -34,7 +34,7 @@ jobs:
       - name: Deploy to Nginx
         run: |
           sudo rm -rf /var/www/html/*
-          sudo cp -r build/* /var/www/html/
+          # Vite builds to 'dist' by default, not 'build'
+          sudo cp -r dist/* /var/www/html/
           sudo chown -R nginx:nginx /var/www/html
           sudo systemctl restart nginx
-
