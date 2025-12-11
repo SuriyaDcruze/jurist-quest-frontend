@@ -337,7 +337,7 @@ const RoundDetails = () => {
                       : "bg-white"
                       }`}
                   >
-                    <div className="flex flex-col items-center text-center mb-6">
+                    <div className="flex flex-col items-center text-center">
                       <div className="w-20 h-20 rounded-full bg-[#2d4817]/10 flex items-center justify-center mb-3">
                         <User className="h-8 w-8 text-[#2d4817]" />
                       </div>
@@ -348,31 +348,6 @@ const RoundDetails = () => {
                         {selectedRound.team1?.team_id}
                       </h3>
                       <p className="text-sm text-gray-500">{selectedRound.team1?.institution_name}</p>
-                    </div>
-
-                    <div className="space-y-4">
-                      <div>
-                        <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Representative</p>
-                        <p className="text-gray-900 font-medium">{selectedRound.team1?.team_representative_name}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Speaker 1</p>
-                        <p className="text-gray-900">
-                          {selectedRound.team1?.speaker_1_name}{" "}
-                          <span className="text-gray-500 text-sm">({selectedRound.team1?.speaker_1_course_type})</span>
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Speaker 2</p>
-                        <p className="text-gray-900">
-                          {selectedRound.team1?.speaker_2_name}{" "}
-                          <span className="text-gray-500 text-sm">({selectedRound.team1?.speaker_2_course_type})</span>
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Researcher</p>
-                        <p className="text-gray-900">{selectedRound.team1?.researcher_name}</p>
-                      </div>
                     </div>
                   </div>
 
@@ -392,7 +367,7 @@ const RoundDetails = () => {
                       : "bg-white"
                       }`}
                   >
-                    <div className="flex flex-col items-center text-center mb-6">
+                    <div className="flex flex-col items-center text-center">
                       <div className="w-20 h-20 rounded-full bg-[#2d4817]/10 flex items-center justify-center mb-3">
                         <User className="h-8 w-8 text-[#2d4817]" />
                       </div>
@@ -403,31 +378,6 @@ const RoundDetails = () => {
                         {selectedRound.team2?.team_id}
                       </h3>
                       <p className="text-sm text-gray-500">{selectedRound.team2?.institution_name}</p>
-                    </div>
-
-                    <div className="space-y-4">
-                      <div>
-                        <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Representative</p>
-                        <p className="text-gray-900 font-medium">{selectedRound.team2?.team_representative_name}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Speaker 1</p>
-                        <p className="text-gray-900">
-                          {selectedRound.team2?.speaker_1_name}{" "}
-                          <span className="text-gray-500 text-sm">({selectedRound.team2?.speaker_1_course_type})</span>
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Speaker 2</p>
-                        <p className="text-gray-900">
-                          {selectedRound.team2?.speaker_2_name}{" "}
-                          <span className="text-gray-500 text-sm">({selectedRound.team2?.speaker_2_course_type})</span>
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Researcher</p>
-                        <p className="text-gray-900">{selectedRound.team2?.researcher_name}</p>
-                      </div>
                     </div>
                   </div>
                 </div>
