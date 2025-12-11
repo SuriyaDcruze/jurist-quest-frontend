@@ -136,7 +136,7 @@ const Index = ({ onLogin }: LoginFormProps) => {
             <form onSubmit={handleLogin} className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="username" className="text-white/90 font-medium">
-                  Team ID
+                  Team ID/Username
                 </Label>
                 <Input
                   id="username"
