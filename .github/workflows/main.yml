@@ -10,7 +10,7 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      # 1️⃣ Checkout repository
+      # 1️⃣ Checkout repo
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -40,10 +40,10 @@ jobs:
           cd /var/www/juristquest-frontend
           npm run build
 
-      # 6️⃣ Copy build output to Nginx directory
+      # 6️⃣ Deploy build to Nginx
       - name: Deploy build to Nginx
         run: |
           sudo rm -rf /var/www/html/*
-          sudo cp -r /var/www/juristquest-frontend/build/* /var/www/html/
+          sudo cp -r /var/www/juristquest-frontend/dist/* /var/www/html/
           sudo chown -R nginx:nginx /var/www/html/
-          sudo systemctl restart nginx
+          sudo systemctl reload nginx
