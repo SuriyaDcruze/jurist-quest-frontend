@@ -10,18 +10,18 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      # 1️⃣ Checkout repo
+      # 1️⃣ Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Prepare frontend directory
+      # 2️⃣ Prepare deployment directory on EC2
       - name: Prepare frontend directory
         run: |
           sudo mkdir -p /var/www/juristquest-frontend
           sudo chown -R ec2-user:ec2-user /var/www/juristquest-frontend
 
-      # 3️⃣ Sync code to server
-      - name: Sync frontend code
+      # 3️⃣ Sync code to EC2
+      - name: Sync code to EC2
         run: |
           rsync -av --delete \
             --exclude=.git \
