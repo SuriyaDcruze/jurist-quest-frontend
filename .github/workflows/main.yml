@@ -47,3 +47,4 @@ jobs:
           sudo cp -r /var/www/juristquest-frontend/dist/* /var/www/html/
           sudo chown -R nginx:nginx /var/www/html/
           sudo systemctl reload nginx
+ 
